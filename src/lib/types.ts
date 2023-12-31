@@ -2,11 +2,14 @@ export interface Post {
   collectionId: string;
   collectionName: string;
   created: string;
-  date: string;
-  fit: string;
   id: string;
   name: string;
-  user: string;
+  date: string;
+  distance: string;
+  speed: string;
+  elevation: string;
+  time: string;
+  fit: string;
   expand: {
     user: User;
   };

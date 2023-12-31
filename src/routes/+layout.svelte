@@ -4,7 +4,7 @@
   // import Footer from "./footer.svelte";
 </script>
 
-<div class="bg-neutral-700" data-sveltekit-prefetch>
+<div class="min-h-screen bg-neutral-700" data-sveltekit-prefetch>
   <div class="bg-neutral-800 border-b-neutral-600 border-b-2 sticky top-0">
     <Header />
   </div>

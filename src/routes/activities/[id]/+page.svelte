@@ -5,13 +5,13 @@
 
   export let data: Post;
 
-  // const inititialView = [50.87, 5.26];
+  const inititialView = [50.87, 5.26];
 </script>
 
 <div class="flex mt-5">
   <div class="w-[15%] mr-5">
     <ul class="text-white border border-neutral-500 bg-neutral-800">
-      <a href="/activities/[id]}">
+      <a href="/activities/{data.id}">
         <li class="p-3 pl-5 text-xl border-b border-neutral-500 border-l-4 border-l-orange-500 hover:bg-neutral-900">
           Overview
         </li>
@@ -97,15 +97,15 @@
             <div class="pb-5">
               <ul class="flex flex-wrap text-white">
                 <li class="pr-5">
-                  <span class="text-3xl">80.45 </span><span class="text-md">km</span><br>
+                  <span class="text-3xl">{data.distance}</span><span class="text-md">km</span><br>
                   <span class="text-sm text-neutral-500">Distance</span>
                 </li>
                 <li class="pr-5">
-                  <span class="text-3xl">2:02:12 </span><span class="text-md">km</span><br>
+                  <span class="text-3xl">{data.time}</span><br>
                   <span class="text-sm text-neutral-500">Moving Time</span>
                 </li>
                 <li>
-                  <span class="text-3xl">344 </span><span class="text-md">m</span><br>
+                  <span class="text-3xl">{data.elevation}</span><span class="text-md">m</span><br>
                   <span class="text-sm text-neutral-500">Elevation</span>
                 </li>
               </ul>
@@ -178,8 +178,7 @@
 
     <div class="mt-5 border border-neutral-500 bg-neutral-800">
       <div class="h-[400px] border-b border-neutral-500">
-        <!-- <Leaflet view={inititialView} zoom={13}/> -->
-        <Leaflet zoom={13}/>
+        <Leaflet view={inititialView} zoom={13}/>
       </div>
       <div class="h-[200px]">
       </div>

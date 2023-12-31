@@ -6,32 +6,120 @@
   import Statistics from '$components/statistics.svelte'
   import type { Post } from '$lib/types';
 
+  export let data;
   let records: Post[] = [];
   let ready: boolean
 
+  let register = false;
+  function ifRegister(){
+    if (register == false) {
+      register = true;
+    } else {
+      register = false;
+    }
+  }
+
   onMount(async () => {
     ready = true
-    records = await pb.collection('activities').getFullList({sort:'-date'})
+    // records = await pb.collection('activities').getFullList({sort:'-date'})
+    if (data.user) {
+      records = await pb.collection('activities').getFullList(undefined, {
+        filter: `user = "${data.user.id}"`
+      })
+    }
   })
 </script>
 
-<div class="flex mx-auto">
-  <div class="w-1/4 m-5">
-    <Profile />
+
+{#if data.user}
+  <div class="flex">
+
+    <div class="w-1/4 m-5">
+
+      <Profile data={data} />
+    </div>
+    <div class="flex flex-col w-1/2 mt-8">
+      {#if ready}
+        {#each records as { date, name, id, distance, speed, elevation, time }}
+          <Activity date={date}
+                    name={name}
+                    id={id}
+                    distance={distance}
+                    speed={speed}
+                    elevation={elevation}
+                    time={time} />
+        {/each}
+      {/if}
+    </div>
+    <div class="w-1/4 m-5">
+      <Statistics />
+    </div>
   </div>
-  <div class="flex flex-col w-1/2 mt-8">
-    {#if ready}
-      {#each records as { date, name, id }}
-        <Activity date={date}
-                  name={name}
-                  id={id} />
-      {/each}
-    {/if}
+{:else}
+  <div class="flex grow">
+    <div class="mx-auto mt-20 h-20">
+      <button on:click={ifRegister} class="mb-2 p-1 rounded-xl bg-orange-600 text-white hover:bg-orange-700 w-20">
+        {#if !register}
+          register
+        {:else}
+          login
+        {/if}
+      </button>
+      {#if !register}
+        <form action="?/login" method="POST" class="flex flex-col items-center w-full">
+          <div class="w-full mb-5">
+            <label for="username" class="pb-1 text-white">
+              <span>username</span>
+            </label>
+            <input type="text" name="username" class="w-full border p-2 rounded-xl" />
+          </div>
+          <div class="w-full mb-5">
+            <label for="password" class="pb-1 text-white">
+              <span>Password</span>
+            </label>
+            <input type="password" name="password" class="w-full border p-2 rounded-xl" />
+          </div>
+          <div>
+            <!-- submit the form -->
+            <button type="submit" class="mx-auto p-2 rounded-xl bg-orange-600 text-white hover:bg-orange-700">Login</button>
+          </div>
+        </form>
+      {:else}
+        <form action="?/register" method="POST" class="flex flex-col items-center w-full">
+          <!-- if form exist and and email is true -->
+          <div class="w-full mb-5">
+            <label for="username" class="pb-1 text-white">
+              <span>username</span>
+            </label>
+            <input type="text" name="username" class="w-full border p-2 rounded-xl" />
+          </div>
+          <div class="w-full mb-5">
+            <label for="name" class="pb-1 text-white">
+              <span>name</span>
+            </label>
+            <input type="text" name="name" class="w-full border p-2 rounded-xl" />
+          </div>
+          <div class="w-full mb-5">
+            <label for="password" class="pb-1 text-white">
+              <span>Password</span>
+              </label>
+              <input type="password" name="password" class="w-full border p-2 rounded-xl" />
+            </div>
+            <div class="w-full mb-5">
+              <label for="password" class="pb-1 text-white">
+                <span>Password2</span>
+              </label>
+              <input type="password" name="passwordConfirm" class="w-full border p-2 rounded-xl" />
+            </div>
+            <div>
+              <!-- submit the form -->
+              <button type="submit" class="mx-auto p-2 rounded-xl bg-orange-600 text-white hover:bg-orange-700">Register</button>
+            </div>
+          </form>
+        {/if}
+    </div>
   </div>
-  <div class="w-1/4 m-5">
-    <Statistics />
-  </div>
-</div>
+{/if}
 
 <style>
 </style>

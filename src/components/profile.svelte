@@ -1,3 +1,7 @@
+<script lang="ts">
+  export let data
+</script>
+
 <div class="flex flex-col sticky top-20 left-0">
   <div class="mt-12 bg-neutral-800">
     <a href="/">
@@ -5,7 +9,7 @@
     </a>
     <h3 class="mt-16 text-2xl font-bold text-white text-center hover:text-orange-500">
       <a href="/">
-        Matthias Benaets
+        {data.user.name}
       </a>
     </h3>
     <div class="pb-4 border-b border-neutral-500">

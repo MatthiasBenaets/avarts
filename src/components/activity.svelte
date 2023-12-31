@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
 
-  export let date: string, name: string, id: string;
+  export let date: string, name: string, id: string, distance: string, speed: string, elevation: string, time: string;
 </script>
 
 <div class="mb-5 bg-neutral-800">
@@ -33,19 +33,23 @@
         </span>
       </div>
     </div>
-    <div class="pb-4 w-[66%]">
+    <div class="pb-4 w-[88%]">
       <ul class="flex flex-wrap mt-5">
-        <li class="flex flex-col w-1/3 pl-4 border-e border-neutral-500">
+        <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Distance</span>
-          <span class="text-xl text-white">175.27 km</span>
+          <span class="text-xl text-white">{distance}<span>&nbspkm</span></span>
         </li>
-        <li class="flex flex-col w-1/3 pl-4 border-e border-neutral-500">
+        <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
+          <span class="text-neutral-500">Speed</span>
+          <span class="text-xl text-white">{speed}<span>&nbspkm/h</span></span>
+        </li>
+        <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Elev Gain</span>
-          <span class="text-xl text-white">332 m</span>
+          <span class="text-xl text-white">{elevation}<span>m</span></span>
         </li>
-        <li class="flex flex-col w-1/3 pl-4">
+        <li class="flex flex-col w-1/4 pl-4">
           <span class="text-neutral-500">Time</span>
-          <span class="text-xl text-white">4h 30m</span>
+          <span class="text-xl text-white">{time}</span>
         </li>
       </ul>
     </div>

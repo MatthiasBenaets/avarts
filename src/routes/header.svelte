@@ -1,4 +1,5 @@
 <script lang="ts">
+  // export let data;
   let showMenu = false;
 
   function toggleNavbar() {
@@ -52,9 +53,12 @@
       <svg class="text-neutral-500 hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
     </div>
     <div class="flex items-center px-3 border-neutral-500 border-e-2 h-full group">
-      <a href="/">
+      <a href="/upload">
         <svg class="text-orange-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
       </a>
     </div>
+    <form action="/logout" method="POST" class="flex pl-4">
+      <button type="submit" class="text-white hover:text-orange-500">Logout</button>
+    </form>
   </div>
 </nav>
