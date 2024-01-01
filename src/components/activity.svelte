@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
 
-  export let date: string, name: string, id: string, distance: string, speed: string, elevation: string, time: string;
+  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string;
 </script>
 
 <div class="mb-5 bg-neutral-800">
@@ -33,11 +33,11 @@
         </span>
       </div>
     </div>
-    <div class="pb-4 w-[88%]">
+    <div class="pb-4 w-[95%]">
       <ul class="flex flex-wrap mt-5">
         <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Distance</span>
-          <span class="text-xl text-white">{distance}<span>&nbspkm</span></span>
+          <span class="text-xl text-white">{distance.toFixed(2)}<span>&nbspkm</span></span>
         </li>
         <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Speed</span>
@@ -45,11 +45,11 @@
         </li>
         <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Elev Gain</span>
-          <span class="text-xl text-white">{elevation}<span>m</span></span>
+          <span class="text-xl text-white">{elevation*1000}<span>m</span></span>
         </li>
         <li class="flex flex-col w-1/4 pl-4">
           <span class="text-neutral-500">Time</span>
-          <span class="text-xl text-white">{time}</span>
+          <span class="text-xl text-white">{new Date(time * 1000).toISOString().substring(11, 19)}</span>
         </li>
       </ul>
     </div>

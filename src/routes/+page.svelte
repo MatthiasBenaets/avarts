@@ -40,14 +40,14 @@
     </div>
     <div class="flex flex-col w-1/2 mt-8">
       {#if ready}
-        {#each records as { date, name, id, distance, speed, elevation, time }}
-          <Activity date={date}
+        {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time }}
+          <Activity date={start_time}
                     name={name}
                     id={id}
-                    distance={distance}
-                    speed={speed}
-                    elevation={elevation}
-                    time={time} />
+                    distance={tot_distance}
+                    speed={avg_speed}
+                    elevation={tot_elevation}
+                    time={elap_time} />
         {/each}
       {/if}
     </div>

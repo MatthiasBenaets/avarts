@@ -12,5 +12,8 @@ export const load: PageLoad = async ({ params }) => {
   if (!activity){
     error(404, 'Post not found');
   };
+  const gpx = activity.gpx;
+  const url = pb.files.getUrl(activity, gpx);
+  activity.url = url;
   return activity;
 };

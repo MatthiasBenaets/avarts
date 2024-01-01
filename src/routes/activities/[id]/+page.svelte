@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
 	import type { Post } from "$lib/types";
-	import Leaflet from "$components/leaflet.svelte";
+	import Leaflet from "$components/leafletView.svelte";
 
   export let data: Post;
 
-  const inititialView = [50.87, 5.26];
+  let gpx = data.url
+
+  const initialView = [0,0];
 </script>
 
 <div class="flex mt-5">
@@ -78,12 +80,15 @@
                 <img src="https://matthias.benaets.com/avatar.webp" alt="avatar" class="h-24 rounded-full">
               </a>
             </div>
-            <div class="p-5 flex flex-col text-white">
+            <div class="pl-5 flex flex-col text-white" style="{data.description ? 'padding-top: 0.25rem;' : 'padding-top: 1.25rem;'}">
               <span>
-                {formatDate(data.date)}
+                {formatDate(data.start_time)}
               </span>
               <span class="text-3xl font-semibold">
                 {data.name}
+              </span>
+              <span class="pt-3 text-neutral-400">
+                {data.description}
               </span>
             </div>
           </div>
@@ -97,15 +102,15 @@
             <div class="pb-5">
               <ul class="flex flex-wrap text-white">
                 <li class="pr-5">
-                  <span class="text-3xl">{data.distance}</span><span class="text-md">km</span><br>
+                  <span class="text-3xl">{(data.tot_distance).toFixed(2)}</span><span class="text-md">km</span><br>
                   <span class="text-sm text-neutral-500">Distance</span>
                 </li>
                 <li class="pr-5">
-                  <span class="text-3xl">{data.time}</span><br>
+                  <span class="text-3xl">{new Date(data.elap_time * 1000).toISOString().substring(11, 19)}</span><br>
                   <span class="text-sm text-neutral-500">Moving Time</span>
                 </li>
                 <li>
-                  <span class="text-3xl">{data.elevation}</span><span class="text-md">m</span><br>
+                  <span class="text-3xl">{data.tot_elevation * 1000}</span><span class="text-md">m</span><br>
                   <span class="text-sm text-neutral-500">Elevation</span>
                 </li>
               </ul>
@@ -113,11 +118,11 @@
             <div class="pb-5 border-b border-neutral-500">
               <ul class="flex flex-wrap text-white">
                 <li class="pr-5">
-                  <span class="text-xl">197 </span><span class="text-md">w</span><br>
+                  <span class="text-xl">{data.norm_power} </span><span class="text-md">w</span><br>
                   <span class="text-sm text-neutral-500">Weighted Avg<br> Power</span>
                 </li>
                 <li>
-                  <span class="text-xl">1391 </span><span class="text-md">kJ</span><br>
+                  <span class="text-xl">{data.tot_calories} </span><span class="text-md">kJ</span><br>
                   <span class="text-sm text-neutral-500">Total Work</span>
                 </li>
               </ul>
@@ -134,31 +139,31 @@
                 </tr>
                 <tr>
                   <td>Speed</td>
-                  <td>39.5 km/h</td>
-                  <td>60.9 km/h</td>
+                  <td>{(data.avg_speed).toFixed(2)} km/h</td>
+                  <td>{(data.max_speed).toFixed(2)} km/h</td>
                 </tr>
                 <tr>
                   <td>Heart Rate</td>
-                  <td>152 bpm</td>
-                  <td>192 bpm</td>
+                  <td>{data.avg_hr} bpm</td>
+                  <td>{data.max_hr} bpm</td>
                 </tr>
                 <tr>
                   <td>Cadence</td>
-                  <td>77</td>
-                  <td>96</td>
+                  <td>{data.avg_cadence}</td>
+                  <td>{data.max_cadence}</td>
                 </tr>
                 <tr>
                   <td>Power</td>
-                  <td>190 W</td>
-                  <td>462 W</td>
+                  <td>{data.avg_power} W</td>
+                  <td>{data.max_power} W</td>
                 </tr>
                 <tr>
                   <td>Calories</td>
-                  <td>1355</td>
+                  <td>{data.tot_calories}</td>
                 </tr>
                 <tr>
                   <td>Elapsed Time</td>
-                  <td>2:02:12</td>
+                  <td>{new Date(data.tot_time * 1000).toISOString().substring(11, 19)}</td>
                 </tr>
               </tbody>
             </table>
@@ -178,9 +183,9 @@
 
     <div class="mt-5 border border-neutral-500 bg-neutral-800">
       <div class="h-[400px] border-b border-neutral-500">
-        <Leaflet view={inititialView} zoom={13}/>
+        <Leaflet view={initialView} zoom={13} gpx={gpx} from="activity"/>
       </div>
-      <div class="h-[200px]">
+      <div class="h-[330px]">
       </div>
     </div>
   </div>
