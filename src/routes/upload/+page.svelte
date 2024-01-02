@@ -9,6 +9,9 @@
   let parsedData = null;
   let gpx = null;
   let process = false;
+  let screenshotBlob
+  let leafletView
+  let formData = new FormData()
 
   const initialView = [0, 0];
 
@@ -44,8 +47,11 @@
         gpx = generateGPX(parsedData)
       }
     });
+    setTimeout(getScreen, 2000)
   };
-
+  function getScreen(){
+    leafletView.createScreenshot();
+  }
 
   function generateGPX(routeData) {
     const gpx = `<?xml version='1.0' encoding='UTF-8'?>
@@ -82,7 +88,7 @@
     event.preventDefault();
 
     const formElement = event.target as HTMLFormElement;
-    let formData = new FormData(formElement);
+    formData = new FormData(formElement);
 
     formData.append('user', data.user.id)
     if (parsedData.activity.sessions[0].avg_speed != undefined) {
@@ -111,6 +117,7 @@
     formData.append('tot_time', parsedData.activity.sessions[0].total_timer_time)
     formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
     formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
+    formData.append('img', screenshotBlob, 'activity.jpg');
 
     // create post or if error received, show error
     let response
@@ -131,7 +138,12 @@
       return console.error(error);
     };
     let link = await response.json()
-    window.location.href = `/activities/${link.data.substr(2,15)}`;
+    setTimeout(() => window.location.href = `/activities/${link.data.substr(2,15)}`,500)
+    // window.location.href = `/activities/${link.data.substr(2,15)}`;
+  };
+
+  const handleScreenshot = (event) => {
+    screenshotBlob = event.detail;
   };
 </script>
 
@@ -168,7 +180,7 @@
         </form>
       {/if}
     </div>
-    {#if parsedData}
+    {#if screenshotBlob}
       <div class="flex items-center justify-center w-1/2">
         <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 w-1/2 h-1/2">Upload</button>
       </div>
@@ -329,7 +341,7 @@
   {/if}
   <div class="w-2/3">
     <div class="h-[400px]" style="{parsedData ? '' : 'opacity: 0; pointer-events: none;'}">
-      <Leaflet view={initialView} zoom={13} gpx={gpx} from="upload"/>
+      <Leaflet bind:this={leafletView}  view={initialView} zoom={13} gpx={gpx} from="upload" on:screenshotTaken={handleScreenshot}/>
     </div>
   </div>
 </div>

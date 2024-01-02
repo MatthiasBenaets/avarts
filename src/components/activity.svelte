@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
 
-  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string;
+  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string, collectionId: string, img: string;
 </script>
 
 <div class="mb-5 bg-neutral-800">
@@ -53,9 +53,10 @@
         </li>
       </ul>
     </div>
-    <div class="h-[300px] bg-green-700">
-      <a href="/">
-        <div class="h-full">
+    <div>
+      <a href="/activities/{id}">
+      <div class="h-full">
+      <img src="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}" alt="">
         <div>
       </a>
     </div>

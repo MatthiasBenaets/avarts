@@ -6,6 +6,9 @@
   import '@raruto/leaflet-elevation/src/index.js';
   import '@raruto/leaflet-elevation/src/index.css';
 
+  // import {SimpleMapScreenshoter} from 'leaflet-simple-map-screenshoter'
+  import 'leaflet-simple-map-screenshoter';
+
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
   export let zoom: number | undefined = undefined;
@@ -18,6 +21,15 @@
 
   let route
   let elevationControl: any;
+
+  let simpleMapScreenshoter;
+  let screenshotOptions = {
+    cropImageByInnerWH: true,
+    hidden: false,
+    // preventDownload: true,
+    hideElementsWithSelectors: ['.leaflet-control-container'],
+    mimeType: 'image/png',
+  }
 
   onMount(() => {
     if (!bounds && (!view || !zoom)) {
@@ -52,6 +64,8 @@
         waypoints: false,
         wptLabels: false,
         downloadLink: false,
+        // distanceMarkers: false,
+        edgeScale: false,
       }).addTo(map);
     } else if (from =="activity") {
       elevationControl = L.control.elevation({
@@ -71,6 +85,9 @@
         closeBtn: false,
       }).addTo(map);
     }
+
+    // L.simpleMapScreenshoter(screenshotOptions).addTo(map)
+    simpleMapScreenshoter = L.simpleMapScreenshoter(screenshotOptions).addTo(map);
 
   });
 
@@ -100,6 +117,24 @@
       map.setView(view, zoom);
     }
   }
+
+  export async function createScreenshot(){
+    const format = 'blob';
+    const overridedPluginOptions = {
+      mimeType: 'image/jpeg'
+    };
+
+    simpleMapScreenshoter.takeScreen(format, overridedPluginOptions).then(blob => {
+      // Handle the screenshot blob here (e.g., save or display it)
+
+      // Example: Display the screenshot in a new window/tab
+      // const imageUrl = URL.createObjectURL(blob);
+      // window.open(imageUrl, '_blank');
+      dispatch('screenshotTaken', blob);
+    }).catch(e => {
+      console.error(e);
+    });
+  }
 </script>
 
 <div class="w-full h-full" bind:this={mapElement}>
@@ -109,6 +144,10 @@
 </div>
 
 <style>
+  /* fix screenshot tailwind grid */
+:global(.leaflet-tile) {
+  border-style: none !important;
+}
 :global(.elevation-control .area) {
     fill:  #ff9f24 ;
     opacity: 1;
@@ -143,7 +182,7 @@
 :global(.grid){
   opacity: 0;
 }
-:global(.leaflet-routing-container .leaflet-marker-icon){
+:global(img.leaflet-marker-icon){
   display: none !important;
   opacity: 0 !important;
 }

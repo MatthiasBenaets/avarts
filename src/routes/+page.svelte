@@ -26,6 +26,7 @@
       records = await pb.collection('activities').getFullList(undefined, {
         filter: `user = "${data.user.id}"`
       })
+      console.log(records)
     }
   })
 </script>
@@ -40,14 +41,16 @@
     </div>
     <div class="flex flex-col w-1/2 mt-8">
       {#if ready}
-        {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time }}
+        {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img }}
           <Activity date={start_time}
                     name={name}
                     id={id}
                     distance={tot_distance}
                     speed={avg_speed}
                     elevation={tot_elevation}
-                    time={elap_time} />
+                    time={elap_time}
+                    collectionId={collectionId}
+                    img={img}/>
         {/each}
       {/if}
     </div>
