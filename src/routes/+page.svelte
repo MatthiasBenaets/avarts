@@ -19,18 +19,37 @@
     }
   }
 
+  let month;
+  let year;
+  let currentDate = new Date();
+  let currentYear = currentDate.getFullYear()
+  currentDate.setDate(currentDate.getDate() - 28);
+  let formattedDate = currentDate.toISOString().split('T')[0];
+
+
   onMount(async () => {
-    ready = true
-    // records = await pb.collection('activities').getFullList({sort:'-date'})
     if (data.user) {
-      records = await pb.collection('activities').getFullList(undefined, {
-        filter: `user = "${data.user.id}"`
-      })
-      console.log(records)
+      // get all activities for feed
+      records = await pb.collection('activities').getFullList(
+        { sort: '-start_time'},
+        { filter: `user = "${data.user.id}"`},
+      )
+
+      // get activities of last 4 weeks
+      month = await pb.collection('activities').getFullList(
+        { sort: '-start_time'},
+        ({ filter: `start_time > "${formattedDate}"`}),
+      )
+
+      // get activities from current year
+      year = await pb.collection('activities').getFullList(
+        { sort: '-start_time'},
+        ({ filter: `start_time >= "${currentYear}-01-01"`}),
+      )
     }
+    ready = true
   })
 </script>
-
 
 {#if data.user}
   <div class="flex">
@@ -50,13 +69,16 @@
                     elevation={tot_elevation}
                     time={elap_time}
                     collectionId={collectionId}
-                    img={img}/>
+                    img={img}
+                    sport={sport}/>
         {/each}
       {/if}
     </div>
-    <div class="w-1/4 m-5">
-      <Statistics />
-    </div>
+    {#if ready}
+      <div class="w-1/4 m-5">
+        <Statistics records={records} month={month} year={year}/>
+      </div>
+    {/if}
   </div>
 {:else}
   <div class="flex grow">

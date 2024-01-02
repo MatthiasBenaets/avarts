@@ -1,7 +1,7 @@
 <script lang="ts">
   // @ts-nocheck
   import FitParser from "fit-file-parser";
-  import { formatTime } from "$lib/utils"
+  import { formatDate, formatTime } from "$lib/utils"
 	import Leaflet from "$components/leafletView.svelte";
 
   export let data;
@@ -12,6 +12,7 @@
   let screenshotBlob
   let leafletView
   let formData = new FormData()
+  let activity = ""
 
   const initialView = [0, 0];
 
@@ -48,9 +49,28 @@
       }
     });
     setTimeout(getScreen, 2000)
+    setTitle()
   };
+
   function getScreen(){
     leafletView.createScreenshot();
+  }
+
+  function setTitle(){
+    let type = "";
+    let date = "";
+    switch (parsedData.activity.sessions[0].sport) {
+      case 'cycling':
+        type = "Ride"
+        break;
+      case 'running':
+        type = "Run"
+        break;
+      default:
+        break;
+    }
+    date = formatDate(new Date(parsedData.activity.sessions[0].start_time))
+    activity = type + " - " + date;
   }
 
   function generateGPX(routeData) {
@@ -164,7 +184,7 @@
                   <span>Activity Name:</span>
                 </td>
                 <td>
-                  <input type="text" name="name" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" placeholder="Required"/>
+                  <input bind:value={activity} type="text" name="name" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" placeholder="Required" />
                 </td>
               </tr>
               <tr>

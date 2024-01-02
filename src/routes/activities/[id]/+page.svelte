@@ -54,7 +54,11 @@
             <a href="/" class="hover:text-orange-500">
               {data.expand.user.name}
             </a>
-            <span>- Ride</span>
+            {#if data.sport == "cycling"}
+              <span>- Ride</span>
+            {:else if data.sport == "running"}
+              <span>- Run</span>
+            {/if}
           </div>
           <div class="">
             <lu class="h-full flex text-white list-none">
@@ -75,12 +79,12 @@
       <div class="flex">
         <div class="flex flex-col w-1/2 border-s border-e border-b border-neutral-500">
           <div class="flex m-5 pb-7 border-b border-neutral-500">
-            <div class="">
+            <div class="w-[20%]">
               <a href="/">
                 <img src="https://matthias.benaets.com/avatar.webp" alt="avatar" class="h-24 rounded-full">
               </a>
             </div>
-            <div class="pl-5 flex flex-col text-white" style="{data.description ? 'padding-top: 0.25rem;' : 'padding-top: 1.25rem;'}">
+            <div class="pl-5 flex flex-col text-white w-[80%]" style="{data.description ? 'padding-top: 0.25rem;' : 'padding-top: 1.25rem;'}">
               <span>
                 {formatDate(data.start_time)}
               </span>

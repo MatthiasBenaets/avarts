@@ -1,3 +1,20 @@
+<script lang="ts">
+
+  export let records, month, year;
+  let currentYear = new Date().getFullYear()
+
+  // get record longest distance
+  let maxDistanceActivity = records.reduce((max, records) => {
+    return records.tot_distance > max.tot_distance ? records : max;
+  }, records[0]);
+
+  // get record with most elevation gain
+  let maxElevationActivity = records.reduce((max, records) => {
+    return records.tot_elevation > max.tot_elevation ? records : max;
+  }, records[0]);
+
+</script>
+
 <div class="mt-12 bg-neutral-800 sticky top-32 left-0">
   <h3 class="pl-6 pt-8 text-xl text-white font-semibold">
     My stats
@@ -34,7 +51,7 @@
             Activities / Week
           </td>
           <td>
-            4
+            {month.length / 4}
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -42,7 +59,7 @@
             Avg Distance / Week
           </td>
           <td>
-            215.4 km
+            {(month.reduce((sum, month) => sum + month.tot_distance, 0) / 4).toFixed(2)} km
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -50,7 +67,7 @@
             Elev Gain / Week
           </td>
           <td>
-            573m
+            {(month.reduce((sum, month) => sum + month.tot_elevation, 0) * 1000 / 4).toFixed(2)} m
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -58,14 +75,14 @@
             Avg Time / Week
           </td>
           <td>
-            6h 44m
+            {(month.reduce((sum, month) => sum + month.tot_time, 0) / 60 / 60 / 4).toFixed(2)} h
           </td>
         </tr>
       </tbody>
       <tbody class="leading-7">
         <tr class="border-b border-neutral-500 leading-10">
           <th class="text-start">
-            2023
+            {currentYear}
           </th>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -73,7 +90,7 @@
             Activities
           </td>
           <td>
-            244
+            {year.length}
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -81,7 +98,7 @@
             Distance
           </td>
           <td>
-            11336.5km
+            {(year.reduce((sum, year) => sum + year.tot_distance, 0)).toFixed(2)} km
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -89,7 +106,7 @@
             Elev Gain
           </td>
           <td>
-            50593m
+            {(year.reduce((sum, year) => sum + year.tot_elevation, 0) * 1000).toFixed(2)} km
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -97,7 +114,7 @@
             Time
           </td>
           <td>
-            383h 33m
+            {(year.reduce((sum, year) => sum + year.tot_time, 0) / 60 / 60).toFixed(2)} h
           </td>
         </tr>
       </tbody>
@@ -112,7 +129,7 @@
             Activities
           </td>
           <td>
-            1310
+            {records.length}
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -120,7 +137,7 @@
             Distance
           </td>
           <td>
-            58334.9 km
+            {(records.reduce((sum, records) => sum + records.tot_distance, 0)).toFixed(2)} km
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -128,7 +145,7 @@
             Elev Gain
           </td>
           <td>
-            288355m
+            {(records.reduce((sum, records) => sum + records.tot_elevation, 0) * 1000).toFixed(2)} m
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -136,7 +153,7 @@
             Time
           </td>
           <td>
-            1943h 48m
+            {(records.reduce((sum, records) => sum + records.tot_time, 0) / 60 / 60).toFixed(2)} h
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
@@ -144,15 +161,15 @@
             Longest Ride
           </td>
           <td>
-            264.9 km
+            {maxDistanceActivity.tot_distance.toFixed(2)} km
           </td>
         </tr>
         <tr class="border-b border-neutral-500">
           <td>
-            Biggest Climb
+            Most Elevation
           </td>
           <td>
-            1536 m
+            {(maxElevationActivity.tot_elevation * 1000)} m
           </td>
         </tr>
       </tbody>

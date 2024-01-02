@@ -25,8 +25,8 @@
   let simpleMapScreenshoter;
   let screenshotOptions = {
     cropImageByInnerWH: true,
-    hidden: false,
-    // preventDownload: true,
+    hidden: true,
+    preventDownload: true,
     hideElementsWithSelectors: ['.leaflet-control-container'],
     mimeType: 'image/png',
   }
