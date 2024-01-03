@@ -58,7 +58,7 @@
         <Profile data={data} records={records} />
       </div>
       <div class="flex flex-col w-1/2 mt-8">
-          {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img, expand }}
+          {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img, expand, location }}
             <Activity date={start_time}
                       name={name}
                       id={id}
@@ -69,7 +69,8 @@
                       collectionId={collectionId}
                       img={img}
                       sport={sport}
-                      user={expand.user.name}/>
+                      user={expand.user.name}
+                      location={location} />
           {/each}
       </div>
         <div class="w-1/4 m-5">

@@ -13,6 +13,7 @@
   let leafletView
   let formData = new FormData()
   let activity = ""
+  let location = ""
 
   const initialView = [0, 0];
 
@@ -50,6 +51,21 @@
     });
     setTimeout(getScreen, 2000)
     setTitle()
+    getLocation()
+  };
+
+  async function getLocation() {
+    try {
+      // 1 000 000 requests/month. Don't abuse please
+      const apiUrl = `https://geocode.maps.co/reverse?lat=${parsedData.activity.sessions[0].start_position_lat}&lon=${parsedData.activity.sessions[0].start_position_long}&api_key=6595ca1312f47773878382wbie28477`;
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      location = `${data.address.town}, ${data.address.country}`;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   function getScreen(){
@@ -141,6 +157,7 @@
     formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
     formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
     formData.append('img', screenshotBlob, 'activity.jpg');
+    formData.append('location', location)
 
     // create post or if error received, show error
     let response
