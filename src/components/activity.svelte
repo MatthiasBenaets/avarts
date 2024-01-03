@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
 
-  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string, collectionId: string, img: string, sport: string;
+  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string, collectionId: string, img: string, sport: string, user: string;
 </script>
 
 <div class="mb-5 bg-neutral-800">
@@ -15,7 +15,7 @@
       <div class="flex flex-col text-white pt-2">
         <span class="font-semibold hover:text-orange-500">
           <a href="/">
-            Matthias Benaets
+            {user}
           </a>
         </span>
         <span>{formatDate(date)} · Alken, Belgium</span>

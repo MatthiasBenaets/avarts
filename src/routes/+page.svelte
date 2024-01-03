@@ -32,7 +32,7 @@
       // get all activities for feed
       records = await pb.collection('activities').getFullList(
         { sort: '-start_time'},
-        { filter: `user = "${data.user.id}"`},
+        { filter: `user = "${data.user.id}"`, expand: "user" },
       )
 
       // get activities of last 4 weeks
@@ -53,30 +53,27 @@
 
 {#if data.user}
   <div class="flex">
-
-    <div class="w-1/4 m-5">
-
-      <Profile data={data} />
-    </div>
-    <div class="flex flex-col w-1/2 mt-8">
-      {#if ready}
-        {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img }}
-          <Activity date={start_time}
-                    name={name}
-                    id={id}
-                    distance={tot_distance}
-                    speed={avg_speed}
-                    elevation={tot_elevation}
-                    time={elap_time}
-                    collectionId={collectionId}
-                    img={img}
-                    sport={sport}/>
-        {/each}
-      {/if}
-    </div>
     {#if ready}
       <div class="w-1/4 m-5">
-        <Statistics records={records} month={month} year={year}/>
+        <Profile data={data} records={records} />
+      </div>
+      <div class="flex flex-col w-1/2 mt-8">
+          {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img, expand }}
+            <Activity date={start_time}
+                      name={name}
+                      id={id}
+                      distance={tot_distance}
+                      speed={avg_speed}
+                      elevation={tot_elevation}
+                      time={elap_time}
+                      collectionId={collectionId}
+                      img={img}
+                      sport={sport}
+                      user={expand.user.name}/>
+          {/each}
+      </div>
+        <div class="w-1/4 m-5">
+          <Statistics records={records} month={month} year={year}/>
       </div>
     {/if}
   </div>
