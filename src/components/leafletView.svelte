@@ -157,7 +157,7 @@
 }
 :global(.elevation-control .axis text, .elevation-control .legend text, .elevation-control .point text) {
   fill: white;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 700;
   paint-order: stroke fill;
   stroke: #fff;

@@ -66,6 +66,9 @@
       case 'running':
         type = "Run"
         break;
+      case 'swimming':
+        type = "Swim"
+        break;
       default:
         break;
     }

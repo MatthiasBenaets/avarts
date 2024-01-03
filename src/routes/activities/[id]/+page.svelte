@@ -58,6 +58,8 @@
               <span>- Ride</span>
             {:else if data.sport == "running"}
               <span>- Run</span>
+            {:else if data.sport == "swimming"}
+              <span>- Swim</span>
             {/if}
           </div>
           <div class="">
