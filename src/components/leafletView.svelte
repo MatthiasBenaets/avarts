@@ -64,7 +64,7 @@
         waypoints: false,
         wptLabels: false,
         downloadLink: false,
-        // distanceMarkers: false,
+        distanceMarkers: false,
         edgeScale: false,
       }).addTo(map);
     } else if (from =="activity") {
@@ -167,12 +167,6 @@
   stroke: orange;
   stroke-width: 3px;
 }
-/* :global(.height-focus-group .circle-lower .height-focus .leaflet-elevation-pane .leaflet-marker-pane){ */
-/*   pointer-events: none !important; */
-/* } */
-:global(.leaflet-interactive) {
-  opacity: 0.2;
-}
 :global(.leaflet-bottom) {
   max-width: 40% !important;
 }
@@ -181,9 +175,5 @@
 }
 :global(.grid){
   opacity: 0;
-}
-:global(img.leaflet-marker-icon){
-  display: none !important;
-  opacity: 0 !important;
 }
 </style>

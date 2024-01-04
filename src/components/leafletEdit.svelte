@@ -7,9 +7,6 @@
   import 'leaflet-control-geocoder';
   import 'lrm-graphhopper'
 
-  // import '@raruto/leaflet-elevation';
-  // import '@raruto/leaflet-elevation/dist/leaflet-elevation.css'
-
   import '@raruto/leaflet-elevation/src/index.js';
   import '@raruto/leaflet-elevation/src/index.css';
 
@@ -25,8 +22,13 @@
   let waypoints: L.LatLng[] = [];
   let routingControl: L.Routing.Control | undefined;
   let route
+  let courseName = ""
   let elevationControl: any;
   let allowMapInteraction = true;
+
+  let distance: number = 0;
+  let elevationGain: number = 0;
+  let estimatedTime: number = 0;
 
   onMount(() => {
     if (!bounds && (!view || !zoom)) {
@@ -49,12 +51,37 @@
     routingControl = L.Routing.control({
       routeWhileDragging: true,
       geocoder: L.Control.Geocoder.nominatim(),
+      // users might need to provider their own.
       router: L.Routing.graphHopper('972234b5-1b03-4502-8243-c1d6412c8b91', {
         urlParameters: {
           vehicle: 'bike'
         }
       }),
       showAlternatives: true,
+      lineOptions: {
+        styles: [{ color: 'orange', opacity: 0.2, weight: 10 }]
+      },
+      createMarker: function (i: number, waypoint: any, n: number) {
+        let iconUrl = '/waypoint.png';
+
+        // Use different icon for the first waypoint
+        if (i === 0) {
+          iconUrl = '/start.png'; // Change 'start.png' to the path of your start marker icon
+        }
+
+        // Use different icon for the last waypoint
+        if (i === n - 1) {
+          iconUrl = '/finish.png'; // Change 'end.png' to the path of your end marker icon
+        }
+        const marker = L.marker(waypoint.latLng, {
+          draggable: true,
+          icon: L.icon({
+            iconUrl: iconUrl,
+            iconSize: [18, 18],
+          })
+        });
+        return marker;
+      }
     }).addTo(map);
 
     async function getElevationData(coordinates) {
@@ -101,6 +128,10 @@
         coord.meta = { elevation: elevationData[index] };
       });
 
+      distance = route.summary.totalDistance;
+      elevationGain = route.summary.totalAscend;
+      estimatedTime = route.summary.totalTime;
+
       if (!elevationControl) {
         elevationControl = L.control.elevation({
           // CHANGE ME: with your own http server folder (eg. "http://custom-server/public/path/to/leaflet-elevation/src/")
@@ -111,7 +142,8 @@
           slope: "summary",
           altitude: true,
           time: false,
-          summary: 'inline',
+          // summary: 'inline',
+          summary: false,
           followMarker: true,
           autofitBounds: false,
           legend: false,
@@ -119,6 +151,8 @@
           wptLabels: false,
         }).addTo(map);
       }
+
+      console.log(route)
 
       // Clear existing data and add the route to the elevation control
       elevationControl.clear();
@@ -213,29 +247,63 @@
     return gpx;
   }
 
-  function interpolatePoints(routeCoordinates, numPoints) {
-    const interpolatedPoints = [];
-    for (let i = 0; i < routeCoordinates.length - 1; i++) {
-      const start = routeCoordinates[i];
-      const end = routeCoordinates[i + 1];
-      for (let j = 0; j <= numPoints; j++) {
-        const fraction = j / numPoints;
-        const lat = start.lat + fraction * (end.lat - start.lat);
-        const lng = start.lng + fraction * (end.lng - start.lng);
-        interpolatedPoints.push(L.latLng(lat, lng));
-      }
-    }
-    return interpolatedPoints;
+  function test() {
+    console.log(courseName)
   }
+
+  console.log(route)
 </script>
 
-<button class="text-white" on:click={exportToGPX}>Export to GPX</button>
-<!-- <div class="w-full h-full" bind:this={mapElement}> -->
-<div class="w-full h-full" bind:this={mapElement}>
-  {#if map}
-    <slot />
-  {/if}
+<div class="w-full h-full">
+  <div class="w-full h-[90%]" bind:this={mapElement}>
+    {#if map}
+      <slot />
+    {/if}
+  </div>
+  <div class="flex flex-row w-full h-[10%] bg-neutral-800 border border-neutral-400">
+    <div class="flex flex-col justify-center items-center h-full w-[6%] border-e border-neutral-400">
+      <span class="text-white text-sm">Type</span>
+      <svg class="mt-1 text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+    </div>
+    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
+      <span class="text-white text-sm">Distance</span>
+      <span class="text-neutral-400 text-2xl font-semibold">
+        {#if distance}{(distance / 1000).toFixed(2)}{:else}0.00{/if} km
+      </span>
+    </div>
+    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
+      <span class="text-white text-sm">Elevation Gain</span>
+      <span class="text-neutral-400 text-2xl font-semibold">
+        <!-- 0.6 because of free elevation api not being very accurate -->
+        {#if elevationGain}{(elevationGain*0.6).toFixed(2)}{:else}0.00{/if} m
+      </span>
+    </div>
+    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
+      <span class="text-white text-sm">Est. Moving Time</span>
+      <span class="text-neutral-400 text-2xl font-semibold">
+        {#if estimatedTime}{(estimatedTime / 60 / 1.7).toFixed(0)}{:else}0{/if} min.
+      </span>
+    </div>
+    <div class="flex flex-row w-[39%]">
+      <div class="w-[75.2%]">
+        <form class="flex justify-center items-center h-full">
+          <div class="flex flex-col">
+            <span class="text-white -mt-2 text-sm">Course name:</span>
+            <input bind:value={courseName} type="text" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
+          </div>
+        </form>
+      </div>
+      <div class="flex justify-center items-center h-full w-[25.8%] border-s border-neutral-400" style="{courseName != '' && route != undefined ? '' : 'cursor: not-allowed;'}">
+        <button on:click={test} class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" style="{courseName != '' && route != undefined ? '' : 'pointer-events: none;' }">Save</button>
+      </div>
+    </div>
+
+    <div class="flex justify-center items-center h-full w-[10%] border-s border-neutral-400">
+      <button class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" on:click={exportToGPX}>Export GPX</button>
+    </div>
+  </div>
 </div>
+
 
 <style>
 :global(.elevation-control .area) {
@@ -245,7 +313,7 @@
 :global(.elevation-control .background) {
     background-color: rgb(38 38 38);
 }
-:global(.elevation-control .axis text, .elevation-control .legend text, .elevation-control .point text) {
+:global(.elevation-control, .axis text, .elevation-control, .legend text, .elevation-control, .point text) {
   fill: white;
   font-size: 15px;
   font-weight: 700;
@@ -257,21 +325,36 @@
   stroke: orange;
   stroke-width: 3px;
 }
-:global(.height-focus-group .circle-lower .height-focus .leaflet-elevation-pane .leaflet-marker-pane){
+/* :global(.height-focus-group, .circle-lower, .height-focus, .leaflet-elevation-pane, .leaflet-marker-pane, .elevation-polyline){ */
+/*   pointer-events: none !important; */
+/* } */
+:global(.leaflet-elevation-pane, .leaflet-marker-pane, .elevation-polyline){
   pointer-events: none !important;
 }
-:global(.leaflet-interactive) {
-  opacity: 0.2;
-}
+/* :global(.leaflet-interactive) { */
+/*   opacity: 0.2; */
+/* } */
 :global(.leaflet-marker-icon) {
+  opacity: 0;
+}
+:global(img.leaflet-marker-draggable) {
   opacity: 1 !important;
 }
-/* :global(.elevation-control .background) { */
+:global(.dist-marker) {
+  opacity: 1 !important;
+  font-size: 0.75rem;
+  text-align: center;
+  font-weight: 800;
+  color: #fff;
+  background: #000;
+  border: 2px solid #777;
+  width: 1.3rem !important;
+  height: 1.3rem !important;
+  margin-left: -10px !important;
+  margin-top: -10px !important;
+}
 :global(.leaflet-bottom) {
-  /* max-height: 100px !important; */
   max-width: 40% !important;
-  /* bottom: 200px; */
-  /* scale: 0.60 */
 }
 :global(.background) {
   height: 100%;

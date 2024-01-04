@@ -245,7 +245,7 @@
             <span>Start Time:</span>
           </td>
           <td class="pl-2">
-            <span>{formatTime(parsedData.activity.sessions[0].start_time)}</span>
+            <span>{formatTime(parsedData.activity.sessions[0].start_time).split('.')[0]}</span>
           </td>
         </tr>
         <tr>

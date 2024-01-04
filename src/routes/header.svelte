@@ -1,10 +1,14 @@
 <script lang="ts">
-  // export let data;
+  import { page } from '$app/stores';
+
   let showMenu = false;
+  let currentPage;
 
   function toggleNavbar() {
     showMenu = !showMenu;
   };
+
+  $: currentPage = $page.url.pathname;
 </script>
 
 <nav class="max-w-screen-xl h-12 mx-auto md:flex md:justify-between">
@@ -17,19 +21,19 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-2 text-neutral-500 hover:text-neutral-200"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       </button>
     </div>
-    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full">
+    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full {currentPage === '/' ? 'border-b-orange-600 border-b-2' : ''}">
       <a href="/" class="flex items-center group">
         <p class="text-white group-hover:text-orange-500 pr-2 transition-colors duration-300">Dashboard</p>
         <svg class="text-neutral-500 group-hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </a>
     </div>
-    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full">
+    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full {currentPage === '/upload' ? 'border-b-orange-600 border-b-2' : ''}">
       <a href="/upload" class="flex items-center group">
         <p class="text-white group-hover:text-orange-500 pr-2 transition-colors duration-300">Upload</p>
         <svg class="text-neutral-500 group-hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </a>
     </div>
-    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full">
+    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full {currentPage === '/routes/new' ? 'border-b-orange-600 border-b-2' : ''}">
       <a href="/routes/new" class="flex items-center group">
         <p class="text-white group-hover:text-orange-500 pr-2 transition-colors duration-300">Create</p>
         <svg class="text-neutral-500 group-hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
