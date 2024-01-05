@@ -6,7 +6,6 @@
   export let data: Post;
 
   let gpx = data.url
-
   const initialView = [0,0];
 </script>
 

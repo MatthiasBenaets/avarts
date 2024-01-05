@@ -2,6 +2,7 @@
 	import Leaflet from "$components/leafletEdit.svelte";
 	import { onMount } from "svelte";
 
+  export let data
   let latitude = 40.71;
   let longitude = -74;
   let initialView = [latitude, longitude];
@@ -33,5 +34,5 @@
 
 <div class="absolute h-[94.5%] w-screen left-0">
 <!-- <div class="absolute h-[90%] w-screen left-0"> -->
-  <Leaflet view={initialView} zoom={13}/>
+  <Leaflet view={initialView} zoom={13} user={data.user} />
 </div>

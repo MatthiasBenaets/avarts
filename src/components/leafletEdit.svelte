@@ -1,4 +1,5 @@
 <script lang="ts">
+  //@ts-nocheck
   import { onMount, onDestroy, setContext, createEventDispatcher, tick } from 'svelte';
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
@@ -10,9 +11,12 @@
   import '@raruto/leaflet-elevation/src/index.js';
   import '@raruto/leaflet-elevation/src/index.css';
 
+  import 'leaflet-simple-map-screenshoter';
+
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
   export let zoom: number | undefined = undefined;
+  export let user: string;
 
   const dispatch = createEventDispatcher();
 
@@ -29,6 +33,21 @@
   let distance: number = 0;
   let elevationGain: number = 0;
   let estimatedTime: number = 0;
+
+  let type = "cycling";
+  let mode = "bike";
+
+  let formData
+
+  let simpleMapScreenshoter;
+  let screenshotBlob: Blob | null = null;
+  let screenshotOptions = {
+    cropImageByInnerWH: true,
+    hidden: true,
+    preventDownload: true,
+    hideElementsWithSelectors: ['.leaflet-control-container', '.leaflet-marker-icon', '.leaflet-edgescale-pane'],
+    mimeType: 'image/png',
+  }
 
   onMount(() => {
     if (!bounds && (!view || !zoom)) {
@@ -54,7 +73,7 @@
       // users might need to provider their own.
       router: L.Routing.graphHopper('972234b5-1b03-4502-8243-c1d6412c8b91', {
         urlParameters: {
-          vehicle: 'bike'
+          vehicle: mode,
         }
       }),
       showAlternatives: true,
@@ -83,6 +102,8 @@
         return marker;
       }
     }).addTo(map);
+
+    simpleMapScreenshoter = L.simpleMapScreenshoter(screenshotOptions).addTo(map);
 
     async function getElevationData(coordinates) {
       try {
@@ -152,14 +173,11 @@
         }).addTo(map);
       }
 
-      console.log(route)
-
       // Clear existing data and add the route to the elevation control
       elevationControl.clear();
       // elevationControl.addData(elevationChartData);
       elevationControl.load(generateGPX(route))
     });
-
   });
 
   onDestroy(() => {
@@ -181,20 +199,19 @@
 
   function handleMapClick(event: L.LeafletMouseEvent) {
     if (allowMapInteraction) {
-    const { lat, lng } = event.latlng;
-    const waypoint = L.latLng(lat, lng);
+      const { lat, lng } = event.latlng;
+      const waypoint = L.latLng(lat, lng);
 
-    waypoints.push(waypoint);
-    // adds a null entry on first click for some reason, so filter null out.
-    waypoints = waypoints.filter(element => element !== null);
+      waypoints.push(waypoint);
+      // adds a null entry on first click for some reason, so filter null out.
+      waypoints = waypoints.filter(element => element !== null);
 
-    routingControl?.setWaypoints(waypoints);
+      routingControl?.setWaypoints(waypoints);
 
-    allowMapInteraction = false;
+      allowMapInteraction = false;
       setTimeout(() => {
         allowMapInteraction = true;
       }, 1000);
-
     }
   }
 
@@ -220,12 +237,12 @@
 
   function generateGPX(routeData) {
     const gpx = `<?xml version='1.0' encoding='UTF-8'?>
-<gpx version="1.1" creator="Matthias Benaets" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<gpx version="1.1" creator="${user.name}" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
   <metadata>
-    <name>16/12</name>
+    <name>${courseName}</name>
     <author>
-      <name>name of athlete</name>
-      <link href="this is the link to the athlete" />
+      <name>${user.name}</name>
+      <link href="${user.id}" />
     </author>
     <copyright author="OpenStreetMap contributors">
      <year>2020</year>
@@ -234,8 +251,8 @@
     <link href="link to router" />
   </metadata>
   <trk>
-    <name>name of activity</name>
-    <type>cycling</type>
+    <name>${courseName}</name>
+    <type>${type}</type>
     <trkseg>
       ${routeData.coordinates.map((coord, index) =>`<trkpt lat="${coord.lat}" lon="${coord.lng}">
         <ele>${coord.meta.elevation}</ele>
@@ -247,11 +264,81 @@
     return gpx;
   }
 
-  function test() {
-    console.log(courseName)
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
+
+    const gpx = generateGPX(route)
+    await createScreenshot()
+
+    const formElement = event.target as HTMLFormElement;
+    formData = new FormData(formElement);
+
+    formData.append('user', user.id);
+    formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
+    formData.append('distance', distance);
+    formData.append('elevation', elevationGain);
+    formData.append('time', estimatedTime);
+    formData.append('sport', type);
+    formData.append('img', screenshotBlob, 'route.png')
+
+    let response
+    try {
+      response = await fetch('/create', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error) {
+      return console.error(error);
+    };
+
+    if (response.ok) {
+      let link = await response.json()
+      console.log(link)
+      window.location.href = `/routes/${link}`
+    }
   }
 
-  console.log(route)
+  export async function createScreenshot(){
+    const format = 'blob';
+    const overridedPluginOptions = {
+      mimeType: 'image/png',
+    };
+
+    if (map && route) {
+      const routeBounds = L.latLngBounds(route.coordinates);
+      map.fitBounds(routeBounds.pad(0.1)); // Adjust padding as needed
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    try {
+      screenshotBlob = await simpleMapScreenshoter.takeScreen(format, overridedPluginOptions);
+    } catch (error) {
+      console.error('Error creating screenshot:', error);
+    }
+  }
+
+  const handleClick = () => {
+    switch (type) {
+      case 'cycling':
+        type = 'running';
+        mode = 'foot';
+        break;
+      case 'running':
+        type = 'cycling';
+        mode = 'bike'
+        break;
+      // case 'swimming':
+      //   type = 'cycling';
+      //   break;
+      default:
+        type = 'cycling';
+    }
+
+    // switch routing method and update route
+    routingControl.options.router.options.urlParameters.vehicle = mode;
+    routingControl.route();
+  };
 </script>
 
 <div class="w-full h-full">
@@ -261,10 +348,16 @@
     {/if}
   </div>
   <div class="flex flex-row w-full h-[10%] bg-neutral-800 border border-neutral-400">
-    <div class="flex flex-col justify-center items-center h-full w-[6%] border-e border-neutral-400">
-      <span class="text-white text-sm">Type</span>
-      <svg class="mt-1 text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
-    </div>
+    <button on:click={handleClick} class="h-full w-[6%] border-e border-neutral-400 group">
+      <div class="flex flex-col h-full justify-center items-center  group-hover:bg-neutral-900">
+        <span class="text-white text-sm">Type</span>
+        {#if type == "cycling"}
+          <svg class="mt-1 text-neutral-400 group-hover:text-orange-600" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+        {:else if type == "running"}
+          <svg class="mt-1 text-neutral-400 group-hover:text-orange-600" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg>
+        {/if}
+      </div>
+    </button>
     <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
       <span class="text-white text-sm">Distance</span>
       <span class="text-neutral-400 text-2xl font-semibold">
@@ -281,20 +374,21 @@
     <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
       <span class="text-white text-sm">Est. Moving Time</span>
       <span class="text-neutral-400 text-2xl font-semibold">
+        <!-- slow estimated time, this make it ~30km/h -->
         {#if estimatedTime}{(estimatedTime / 60 / 1.7).toFixed(0)}{:else}0{/if} min.
       </span>
     </div>
     <div class="flex flex-row w-[39%]">
       <div class="w-[75.2%]">
-        <form class="flex justify-center items-center h-full">
+        <form id="input" method="POST" on:submit={handleSubmit} class="flex justify-center items-center h-full">
           <div class="flex flex-col">
             <span class="text-white -mt-2 text-sm">Course name:</span>
-            <input bind:value={courseName} type="text" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
+            <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
           </div>
         </form>
       </div>
       <div class="flex justify-center items-center h-full w-[25.8%] border-s border-neutral-400" style="{courseName != '' && route != undefined ? '' : 'cursor: not-allowed;'}">
-        <button on:click={test} class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" style="{courseName != '' && route != undefined ? '' : 'pointer-events: none;' }">Save</button>
+        <button type="submit" form="input" class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" style="{courseName != '' && route != undefined ? '' : 'pointer-events: none;' }">Save</button>
       </div>
     </div>
 
@@ -306,6 +400,10 @@
 
 
 <style>
+/* fix screenshot tailwind grid */
+:global(.leaflet-tile) {
+  border-style: none !important;
+}
 :global(.elevation-control .area) {
     fill:  #ff9f24 ;
     opacity: 1;

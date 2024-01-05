@@ -121,7 +121,7 @@
   export async function createScreenshot(){
     const format = 'blob';
     const overridedPluginOptions = {
-      mimeType: 'image/jpeg'
+      mimeType: 'image/png'
     };
 
     simpleMapScreenshoter.takeScreen(format, overridedPluginOptions).then(blob => {

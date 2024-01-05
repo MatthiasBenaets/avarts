@@ -8,12 +8,7 @@ export const actions = {
 		try {
       await locals.pb.collection('activities').create(formData);
 		} catch (err) {
-      // if error returned, send prop with email = true (will show message on screen)
-      if (err.status === 400 || err.status === 401) {
-        console.log('Error: ', err);
-      } else {
-			  return error(500, 'Something went wrong logging in');
-      };
+      return error(500, 'Something went wrong');
 		};
 
     const record = await locals.pb.collection('activities').getList(1, 1, { sort: '-created' });

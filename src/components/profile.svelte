@@ -4,8 +4,8 @@
 
 <div class="flex flex-col sticky top-20 left-0">
   <div class="mt-12 bg-neutral-800">
-    <a href="/">
-      <img src="https://matthias.benaets.com/avatar.webp" alt="avatar" class="h-24 rounded-full mx-auto -m-12">
+    <a href="/" class="pointer-events-none">
+      <img src="https://matthias.benaets.com/avatar.webp" alt="avatar" class="h-24 rounded-full mx-auto -m-12 pointer-events-auto">
     </a>
     <h3 class="mt-16 text-2xl font-bold text-white text-center hover:text-orange-500">
       <a href="/">

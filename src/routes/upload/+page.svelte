@@ -156,7 +156,7 @@
     formData.append('tot_time', parsedData.activity.sessions[0].total_timer_time)
     formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
     formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
-    formData.append('img', screenshotBlob, 'activity.jpg');
+    formData.append('img', screenshotBlob, 'activity.png');
     formData.append('location', location)
 
     // create post or if error received, show error
@@ -179,7 +179,6 @@
     };
     let link = await response.json()
     setTimeout(() => window.location.href = `/activities/${link.data.substr(2,15)}`,500)
-    // window.location.href = `/activities/${link.data.substr(2,15)}`;
   };
 
   const handleScreenshot = (event) => {
@@ -188,7 +187,7 @@
 </script>
 
 <div class="px-5 pt-5">
-  <h1 class="text-5xl text-white font-semibold">Upload Your Activity</h1>
+  <h1 class="text-3xl text-white font-semibold">Upload Your Activity</h1>
   <div class="flex flex-row">
     <div class="flex flex-col my-5 w-1/2">
       <input type="file" name="fit" form="activity" accept=".fit" on:change={handleFileChange} class="text-white"/>

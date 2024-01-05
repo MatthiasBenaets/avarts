@@ -33,9 +33,9 @@
         <svg class="text-neutral-500 group-hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </a>
     </div>
-    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full {currentPage === '/routes/new' ? 'border-b-orange-600 border-b-2' : ''}">
-      <a href="/routes/new" class="flex items-center group">
-        <p class="text-white group-hover:text-orange-500 pr-2 transition-colors duration-300">Create</p>
+    <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full {currentPage === '/routes/new' || currentPage === '/routes' ? 'border-b-orange-600 border-b-2' : ''}">
+      <a href="/routes" class="flex items-center group">
+        <p class="text-white group-hover:text-orange-500 pr-2 transition-colors duration-300">Routes</p>
         <svg class="text-neutral-500 group-hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </a>
     </div>
