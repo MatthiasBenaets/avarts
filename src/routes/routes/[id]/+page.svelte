@@ -49,7 +49,7 @@
           Download Route
         </button>
       </a>
-      <a href="/routes" class="bg-neutral-700 rounded-md text-neutral-200 hover:bg-neutral-600 w-1/2 p-2 ml-1 text-sm border border-neutral-400">
+      <a href="/routes/{data.id}/edit" class="bg-neutral-700 rounded-md text-neutral-200 hover:bg-neutral-600 w-1/2 p-2 ml-1 text-sm border border-neutral-400">
         <button class="h-full w-full">
           Edit
         </button>

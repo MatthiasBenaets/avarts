@@ -34,5 +34,5 @@
 
 <div class="absolute h-[94.5%] w-screen left-0">
 <!-- <div class="absolute h-[90%] w-screen left-0"> -->
-  <Leaflet view={initialView} zoom={13} user={data.user} from="new" routeData={null}/>
+  <Leaflet view={initialView} zoom={13} user={data.user} from="edit" routeData={data} />
 </div>

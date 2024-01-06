@@ -6,7 +6,6 @@
   import '@raruto/leaflet-elevation/src/index.js';
   import '@raruto/leaflet-elevation/src/index.css';
 
-  // import {SimpleMapScreenshoter} from 'leaflet-simple-map-screenshoter'
   import 'leaflet-simple-map-screenshoter';
 
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
@@ -149,11 +148,14 @@
   border-style: none !important;
 }
 :global(.elevation-control .area) {
-    fill:  #ff9f24 ;
-    opacity: 1;
+  fill:  #ff9f24 ;
+  opacity: 1;
 }
 :global(.elevation-control .background) {
-    background-color: rgb(38 38 38);
+  background-color: rgb(38 38 38);
+}
+:global(.leaflet-marker-icon) {
+  opacity: 0;
 }
 :global(.elevation-control .axis text, .elevation-control .legend text, .elevation-control .point text) {
   fill: white;

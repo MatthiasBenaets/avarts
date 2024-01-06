@@ -61,7 +61,7 @@
             Activities / Week
           </td>
           <td>
-            {(month.filter(item => item.sport === activityType).length / 4).toFixed(2)}
+            {Math.round((month.filter(item => item.sport === activityType).length / 4).toFixed(2))}
           </td>
         </tr>
         <tr class="border-b border-neutral-500">

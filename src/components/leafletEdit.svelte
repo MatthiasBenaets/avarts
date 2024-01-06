@@ -17,6 +17,8 @@
   export let view: L.LatLngExpression | undefined = undefined;
   export let zoom: number | undefined = undefined;
   export let user: string;
+  export let from: string;
+  export let routeData;
 
   const dispatch = createEventDispatcher();
 
@@ -48,6 +50,8 @@
     hideElementsWithSelectors: ['.leaflet-control-container', '.leaflet-marker-icon', '.leaflet-edgescale-pane'],
     mimeType: 'image/png',
   }
+
+  let ready = false;
 
   onMount(() => {
     if (!bounds && (!view || !zoom)) {
@@ -178,6 +182,18 @@
       // elevationControl.addData(elevationChartData);
       elevationControl.load(generateGPX(route))
     });
+
+    // If there is a route (from edit), load it
+    if (routeData) {
+      waypoints = (routeData.builder).actualWaypoints.map(waypoint => waypoint.latLng);
+      routingControl?.setWaypoints(waypoints);
+
+      // Trigger route calculation
+      route = routeData.builder
+      routingControl?.route();
+
+      courseName = routeData.title;
+    };
   });
 
   onDestroy(() => {
@@ -189,7 +205,7 @@
     getMap: () => map
   });
 
-  $: if (map) {
+  $: if (map && from == "new") {
     if (bounds) {
       map.fitBounds(bounds);
     } else if (view && zoom) {
@@ -245,7 +261,7 @@
       <link href="${user.id}" />
     </author>
     <copyright author="OpenStreetMap contributors">
-     <year>2020</year>
+     // <year>2020</year>
      <license>https://www.openstreetmap.org/copyright</license>
     </copyright>
     <link href="link to router" />
@@ -280,6 +296,7 @@
     formData.append('time', estimatedTime);
     formData.append('sport', type);
     formData.append('img', screenshotBlob, 'route.png')
+    formData.append('builder', JSON.stringify(route))
 
     let response
     try {
@@ -293,8 +310,41 @@
 
     if (response.ok) {
       let link = await response.json()
-      console.log(link)
-      window.location.href = `/routes/${link}`
+      setTimeout(window.location.href = `/routes/${link}`,2000)
+    }
+  }
+
+  async function handleUpdate(event: Event) {
+    event.preventDefault();
+
+    const gpx = generateGPX(route)
+    await createScreenshot()
+
+    const formElement = event.target as HTMLFormElement;
+    formData = new FormData(formElement);
+
+    formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
+    formData.append('distance', distance);
+    formData.append('elevation', elevationGain);
+    formData.append('time', estimatedTime);
+    formData.append('sport', type);
+    formData.append('img', screenshotBlob, 'route.png')
+    formData.append('builder', JSON.stringify(route))
+    formData.append('id', routeData.id)
+
+    let response
+    try {
+      response = await fetch('/update', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error) {
+      return console.error(error);
+    };
+
+    if (response.ok) {
+      let link = await response.json()
+      setTimeout(window.location.href = `/routes/${link}`,2000)
     }
   }
 
@@ -380,12 +430,21 @@
     </div>
     <div class="flex flex-row w-[39%]">
       <div class="w-[75.2%]">
-        <form id="input" method="POST" on:submit={handleSubmit} class="flex justify-center items-center h-full">
-          <div class="flex flex-col">
-            <span class="text-white -mt-2 text-sm">Course name:</span>
-            <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
-          </div>
-        </form>
+        {#if from == "new"}
+          <form id="input" method="POST" on:submit={handleSubmit} class="flex justify-center items-center h-full">
+            <div class="flex flex-col">
+              <span class="text-white -mt-2 text-sm">Course name:</span>
+              <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
+            </div>
+          </form>
+        {:else if from == "edit"}
+          <form id="input" method="POST" on:submit={handleUpdate} class="flex justify-center items-center h-full">
+            <div class="flex flex-col">
+              <span class="text-white -mt-2 text-sm">Course name:</span>
+              <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
+            </div>
+          </form>
+        {/if}
       </div>
       <div class="flex justify-center items-center h-full w-[25.8%] border-s border-neutral-400" style="{courseName != '' && route != undefined ? '' : 'cursor: not-allowed;'}">
         <button type="submit" form="input" class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" style="{courseName != '' && route != undefined ? '' : 'pointer-events: none;' }">Save</button>
@@ -423,15 +482,9 @@
   stroke: orange;
   stroke-width: 3px;
 }
-/* :global(.height-focus-group, .circle-lower, .height-focus, .leaflet-elevation-pane, .leaflet-marker-pane, .elevation-polyline){ */
-/*   pointer-events: none !important; */
-/* } */
 :global(.leaflet-elevation-pane, .leaflet-marker-pane, .elevation-polyline){
   pointer-events: none !important;
 }
-/* :global(.leaflet-interactive) { */
-/*   opacity: 0.2; */
-/* } */
 :global(.leaflet-marker-icon) {
   opacity: 0;
 }

@@ -5,7 +5,7 @@
 <div class="flex flex-col sticky top-20 left-0">
   <div class="mt-12 bg-neutral-800">
     <a href="/" class="pointer-events-none">
-      <img src="https://matthias.benaets.com/avatar.webp" alt="avatar" class="h-24 rounded-full mx-auto -m-12 pointer-events-auto">
+      <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
     </a>
     <h3 class="mt-16 text-2xl font-bold text-white text-center hover:text-orange-500">
       <a href="/">
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="my-4 px-4">
-      <a href="/" class="flex justify-between group">
+      <a href="/routes" class="flex justify-between group">
         <span class="text-white group-hover:text-orange-500">
           Your Routes
         </span>

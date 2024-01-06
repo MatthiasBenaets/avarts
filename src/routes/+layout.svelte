@@ -1,12 +1,13 @@
 <script lang="ts">
   import "../app.css";
   import Header from "./header.svelte";
-  // import Footer from "./footer.svelte";
+
+  export let data;
 </script>
 
 <div class="min-h-screen bg-neutral-700" data-sveltekit-prefetch>
   <div class="bg-neutral-800 border-b-neutral-600 border-b-2 sticky top-0">
-    <Header />
+    <Header data={data}/>
   </div>
   <main class="max-w-screen md:max-w-7xl mx-auto">
     <slot />

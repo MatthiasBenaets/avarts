@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
 
-  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string, collectionId: string, img: string, sport: string, user: string, location: string;
+  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string, collectionId: string, img: string, sport: string, user, location: string;
 </script>
 
 <div class="mb-5 bg-neutral-800">
@@ -9,13 +9,13 @@
     <div class="flex">
       <div class="w-[15%]">
         <a href="/">
-          <img src="https://matthias.benaets.com/avatar.webp" alt="avatar" class="h-16 rounded-full">
+          <img src="http://127.0.0.1:8090/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full">
         </a>
       </div>
       <div class="flex flex-col text-white pt-2">
         <span class="font-semibold hover:text-orange-500">
           <a href="/">
-            {user}
+            {user.name}
           </a>
         </span>
         <span>{formatDate(date)} · {location}</span>

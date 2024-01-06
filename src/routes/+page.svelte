@@ -69,8 +69,8 @@
                       collectionId={collectionId}
                       img={img}
                       sport={sport}
-                      user={expand.user.name}
-                      location={location} />
+                      user={expand.user}
+                      location={location}/>
           {/each}
       </div>
         <div class="w-1/4 m-5">
