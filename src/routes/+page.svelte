@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { afterUpdate, onMount } from 'svelte';
   import { pb } from '$lib/database';
   import Profile from '$components/profile.svelte'
   import Activity from '$components/activity.svelte'
@@ -9,6 +9,9 @@
   export let data;
   let records: Post[] = [];
   let ready: boolean
+  let loadingMore: boolean = false;
+  let page: number = 0;
+  const itemsPerPage: number = 5; // Number of activities loaded
 
   let register = false;
   function ifRegister(){
@@ -26,28 +29,51 @@
   currentDate.setDate(currentDate.getDate() - 28);
   let formattedDate = currentDate.toISOString().split('T')[0];
 
+  // incrementally load activities
+  async function loadMoreActivities() {
+    if (!loadingMore) {
+      loadingMore = true;
+      page += 1;
+
+      const newActivities = await pb.collection('activities').getList(page, itemsPerPage, { filter: `user = "${data.user.id}"`, expand: 'user', sort: '-start_time'});
+
+      records = [...records, ...newActivities.items];
+
+      loadingMore = false;
+    }
+  }
+
   onMount(async () => {
     if (data.user) {
-      // get all activities for feed
-      records = await pb.collection('activities').getFullList(
-        { sort: '-start_time'},
-        { filter: `user = "${data.user.id}"`, expand: "user" },
-      )
+      // load initial 5 posts
+      await loadMoreActivities();
 
       // get activities of last 4 weeks
-      month = await pb.collection('activities').getFullList(
-        { sort: '-start_time'},
-        ({ filter: `start_time > "${formattedDate}"`}),
-      )
+      month = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `start_time > "${formattedDate}"`});
 
       // get activities from current year
-      year = await pb.collection('activities').getFullList(
-        { sort: '-start_time'},
-        ({ filter: `start_time >= "${currentYear}-01-01"`}),
-      )
+      year = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `start_time >= "${currentYear}-01-01"`});
     }
     ready = true
   })
+
+  // incrementally load activities
+  afterUpdate(() => {
+    const scrollHandler = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 200
+      ) {
+        loadMoreActivities();
+      }
+    };
+
+    window.addEventListener('scroll', scrollHandler);
+
+    return () => {
+      window.removeEventListener('scroll', scrollHandler);
+    };
+  });
 </script>
 
 {#if data.user}

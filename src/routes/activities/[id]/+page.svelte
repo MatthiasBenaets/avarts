@@ -82,8 +82,11 @@
           <div class="flex m-5 pb-7 border-b border-neutral-500">
             <div class="w-[20%]">
               <a href="/">
-                <!-- <img src="http://127.0.0.1:8090/ap/files/" alt="avatar" class="h-24 rounded-full"> -->
-                <img src="/avatar.svg" alt="avatar" class="h-24 rounded-full">
+                {#if data.expand.user.avatar}
+                  <img src="http://127.0.0.1:8090/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar" class="h-24 rounded-full">
+                {:else}
+                  <img src="/avatar.svg" alt="avatar" class="h-24 rounded-full">
+                {/if}
               </a>
             </div>
             <div class="pl-5 flex flex-col text-white w-[80%]" style="{data.description ? 'padding-top: 0.25rem;' : 'padding-top: 1.25rem;'}">
