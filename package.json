@@ -1,5 +1,5 @@
 {
-	"name": "strava",
+	"name": "avarts",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -35,6 +35,8 @@
 	"dependencies": {
 		"@raruto/leaflet-elevation": "^2.5.1",
 		"@sports-alliance/sports-lib": "^5.4.24",
+		"@sveltejs/adapter-node": "^2.0.2",
+		"express": "^4.18.2",
 		"fit-file-parser": "^1.9.5",
 		"leaflet": "^1.9.4",
 		"leaflet-control-geocoder": "^2.4.0",

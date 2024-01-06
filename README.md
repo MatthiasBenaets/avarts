@@ -39,3 +39,11 @@ You can preview the production build with `npm run preview`.
 
 ## Pocketbase Cred
 local@host.lan - password01
+
+## Deploy note
+
+1. (npm run build) ; node build ; /pb/pockebase server --http=0.0.0.0:8090
+
+2. docker build . -t avarts ; docker run -p 8080:8080 -p 8090:8090 -v avarts:/app/db/pb_data avarts:latest
+
+3. docker compose up -d
