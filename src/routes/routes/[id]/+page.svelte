@@ -94,7 +94,12 @@
           <span class="text-neutral-400">{data.created.split(" ")[0]}</span>
         </div>
         <div>
-          <img class="w-16 h-16 rounded-full object-cover" src="http://127.0.0.1:8090/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar"/>
+          {#if data.expand.user.avatar}
+            <img class="w-16 h-16 rounded-full object-cover" src="http://127.0.0.1:8090/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar"/>
+          {:else}
+            <img class="w-16 h-16 rounded-full object-cover" src="/avatar.svg" alt="avatar"/>
+
+          {/if}
         </div>
       </div>
     </div>

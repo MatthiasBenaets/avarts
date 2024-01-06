@@ -59,7 +59,11 @@
         </a>
       </div>
       <div class="flex items-center pl-4 pr-2 border-neutral-500 border-e-2 h-full group">
-        <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-8 w-8 object-cover mr-2 rounded-full overflow-hidden">
+        {#if data.user.avatar}
+          <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-8 w-8 object-cover mr-2 rounded-full overflow-hidden">
+        {:else}
+          <img src="/avatar.svg" alt="avatar" class="h-8 w-8 object-cover mr-2 rounded-full overflow-hidden">
+        {/if}
         <svg class="text-neutral-500 group-hover:text-orange-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </div>
       <div class="flex items-center px-3 border-neutral-500 border-e-2 h-full group">

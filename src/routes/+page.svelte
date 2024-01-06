@@ -26,7 +26,6 @@
   currentDate.setDate(currentDate.getDate() - 28);
   let formattedDate = currentDate.toISOString().split('T')[0];
 
-
   onMount(async () => {
     if (data.user) {
       // get all activities for feed
@@ -58,6 +57,7 @@
         <Profile data={data} records={records} />
       </div>
       <div class="flex flex-col w-1/2 mt-8">
+        {#if records.length > 0}
           {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img, expand, location }}
             <Activity date={start_time}
                       name={name}
@@ -72,6 +72,24 @@
                       user={expand.user}
                       location={location}/>
           {/each}
+        {:else}
+          <div class="mb-5 bg-neutral-800">
+            <div class="flex flex-col m-5">
+              <div class="flex">
+                <h2 class="text-white text-2xl font-semibold">
+                  Upload your first activity
+                </h2>
+              </div>
+              <div class="mt-3">
+                <a href="/upload">
+                  <button class="p-3 bg-orange-600 text-white font-semibold rounded-md">
+                    Upload activity
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+        {/if}
       </div>
         <div class="w-1/4 m-5">
           <Statistics records={records} month={month} year={year}/>
@@ -112,13 +130,13 @@
           <!-- if form exist and and email is true -->
           <div class="w-full mb-5">
             <label for="username" class="pb-1 text-white">
-              <span>username</span>
+              <span>Username</span>
             </label>
             <input type="text" name="username" class="w-full border p-2 rounded-xl" />
           </div>
           <div class="w-full mb-5">
             <label for="name" class="pb-1 text-white">
-              <span>name</span>
+              <span>Name</span>
             </label>
             <input type="text" name="name" class="w-full border p-2 rounded-xl" />
           </div>
@@ -130,7 +148,7 @@
             </div>
             <div class="w-full mb-5">
               <label for="password" class="pb-1 text-white">
-                <span>Password2</span>
+                <span>Verify Password</span>
               </label>
               <input type="password" name="passwordConfirm" class="w-full border p-2 rounded-xl" />
             </div>

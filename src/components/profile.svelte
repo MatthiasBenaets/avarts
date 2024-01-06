@@ -5,7 +5,12 @@
 <div class="flex flex-col sticky top-20 left-0">
   <div class="mt-12 bg-neutral-800">
     <a href="/" class="pointer-events-none">
-      <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
+      {#if data.user.avatar}
+        <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
+      {:else}
+        <img src="/avatar.svg" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
+
+      {/if}
     </a>
     <h3 class="mt-16 text-2xl font-bold text-white text-center hover:text-orange-500">
       <a href="/">
@@ -45,7 +50,9 @@
     <div class="flex flex-col mt-8 px-4 text-white">
       <span class="mb-2 text-sm">Latest activity</span>
       <div class="pb-5 border-b border-neutral-500">
-        <span class="text-md font-semibold hover:text-orange-500"><a href="/activities/{records[0].id}">{records[0].name} <span class="text-sm font-normal">- {new Date(records[0].start_time).toISOString().split('T')[0]}</span></a></span>
+        {#if records.length > 0}
+          <span class="text-md font-semibold hover:text-orange-500"><a href="/activities/{records[0].id}">{records[0].name} <span class="text-sm font-normal">- {new Date(records[0].start_time).toISOString().split('T')[0]}</span></a></span>
+        {/if}
       </div>
     </div>
     <div class="my-4 px-4">

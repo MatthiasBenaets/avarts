@@ -9,7 +9,11 @@
     <div class="flex">
       <div class="w-[15%]">
         <a href="/">
-          <img src="http://127.0.0.1:8090/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full">
+          {#if user.avatar}
+            <img src="http://127.0.0.1:8090/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full">
+          {:else}
+            <img src="/avatar.svg" alt="avatar" class="h-16 w-16 object-cover rounded-full">
+          {/if}
         </a>
       </div>
       <div class="flex flex-col text-white pt-2">
