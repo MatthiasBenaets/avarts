@@ -11,6 +11,10 @@ services:
       - "8090:8090"
     volumes:
       - data:/app/db/pb_data
+    environment:
+      - PUBLIC_GRAPHHOPPER_API=972234b5-1b03-4502-8243-c1d6412c8b91test
+      - PUBLIC_LOCATION_API=6595ca1312f47773878382wbie28477
+    # - BODY_SIZE_LIMIT=
 
 volumes:
   data:

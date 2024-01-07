@@ -22,6 +22,7 @@
     }
   }
 
+  let totals;
   let month;
   let year;
   let currentDate = new Date();
@@ -47,6 +48,8 @@
     if (data.user) {
       // load initial 5 posts
       await loadMoreActivities();
+      // get list of all activities their types (lower package w/ loading only 5 posts at a time.)
+      totals = await pb.collection("activities").getFullList({filter: `user = "${data.user.id}"`, fields: "id, name, sport, start_time, tot_distance, tot_elevation, tot_time"})
 
       // get activities of last 4 weeks
       month = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `start_time > "${formattedDate}"`});
@@ -80,7 +83,7 @@
   <div class="flex">
     {#if ready}
       <div class="w-1/4 m-5">
-        <Profile data={data} records={records} />
+        <Profile data={data} records={totals} />
       </div>
       <div class="flex flex-col w-1/2 mt-8">
         {#if records.length > 0}
@@ -118,7 +121,7 @@
         {/if}
       </div>
         <div class="w-1/4 m-5">
-          <Statistics records={records} month={month} year={year}/>
+          <Statistics records={totals} month={month} year={year}/>
       </div>
     {/if}
   </div>

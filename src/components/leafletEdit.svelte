@@ -51,9 +51,16 @@
     mimeType: 'image/png',
   }
 
-  let ready = false;
+  let graphApi;
 
-  onMount(() => {
+  onMount(async() => {
+    const env = await import ('$env/dynamic/public')
+    graphApi = env.PUBLIC_GRAPHHOPPER_API
+    if (!graphApi)  {
+      const { PUBLIC_GRAPHHOPPER_API } = await import ('$env/static/public')
+      graphApi = PUBLIC_GRAPHHOPPER_API;
+    }
+
     if (!bounds && (!view || !zoom)) {
       throw new Error('Must set either bounds, or view and zoom.');
     }
@@ -75,7 +82,7 @@
       routeWhileDragging: true,
       geocoder: L.Control.Geocoder.nominatim(),
       // users might need to provider their own.
-      router: L.Routing.graphHopper('972234b5-1b03-4502-8243-c1d6412c8b91', {
+      router: L.Routing.graphHopper(graphApi, {
         urlParameters: {
           vehicle: mode,
         }

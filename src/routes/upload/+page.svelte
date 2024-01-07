@@ -3,6 +3,7 @@
   import FitParser from "fit-file-parser";
   import { formatDate, formatTime } from "$lib/utils"
 	import Leaflet from "$components/leafletView.svelte";
+  import { env } from "$env/dynamic/public";
 
   export let data;
   let fileContent = null;
@@ -14,6 +15,7 @@
   let formData = new FormData()
   let activity = ""
   let location = ""
+  let locationApi;
 
   const initialView = [0, 0];
 
@@ -54,10 +56,16 @@
     getLocation()
   };
 
+  if (env.PUBLIC_LOCATION_API) {
+    locationApi = env.PUBLIC_LOCATION_API
+  } else {
+    const { PUBLIC_LOCATION_API } = import ('$env/static/public')
+    locationApi = PUBLIC_LOCATION_API
+  }
+
   async function getLocation() {
     try {
-      // 1 000 000 requests/month. Don't abuse please
-      const apiUrl = `https://geocode.maps.co/reverse?lat=${parsedData.activity.sessions[0].start_position_lat}&lon=${parsedData.activity.sessions[0].start_position_long}&api_key=6595ca1312f47773878382wbie28477`;
+      const apiUrl = `https://geocode.maps.co/reverse?lat=${parsedData.activity.sessions[0].start_position_lat}&lon=${parsedData.activity.sessions[0].start_position_long}&api_key=${locationApi}`;
 
       const response = await fetch(apiUrl);
       const data = await response.json();

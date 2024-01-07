@@ -13,5 +13,8 @@ COPY --from=builder /kit/package.json /app/package.json
 COPY --from=builder /kit/package-lock.json /app/package-lock.json
 RUN npm install express
 
+ENV BODY_SIZE_LIMIT=5242880
+# ENV GRAPHHOPPER_API=
+# ENV LOCATION_API=
 EXPOSE 8080 8090
 CMD ["sh", "-c", "node server.js & /app/db/pocketbase serve --http=0.0.0.0:8090"]
