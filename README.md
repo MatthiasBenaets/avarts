@@ -1,49 +1,58 @@
-# create-svelte
+<h1 align="center">
+  <br>
+  <img src="/static/avarts.svg" alt="Avarts" width="500">
+</h1>
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+<h4 align="center">A self-hosted fitness activity tracker.</h4>
 
-## Creating a project
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#deployment">Deployment</a> •
+  <a href="#configuration">Configuration</a> •
+  <a href="#credentials">Credentials</a> •
+  <a href="#FAQ">FAQ</a> •
+  <a href="#TODO">To Do</a> •
+  <a href="#license">License</a>
+</p>
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+<b>Avarts</b> is a self-hosted application designed for athletes seeking to monitor and analyze their fitness activities.
+It offers a <b>private alternative</b> to mainstream activity tracking platforms, <b>Avarts</b> will store your <b>activities, routes, and overall statistics</b>.
+For now, the platform is mainly focused on running, cycling and swimming.
+</td></tr></table>
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Features
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Pocketbase Cred
-local@host.lan - password01
-
-## Deploy note
+## Deployment
 
 1. (npm run build) ; node build ; /pb/pockebase server --http=0.0.0.0:8090
 
 2. docker build . -t avarts ; docker run -p 8080:8080 -p 8090:8090 -v avarts:/app/db/pb_data avarts:latest
 
 3. docker compose up -d
+
+> [!IMPORTANT]
+> Update the api keys to your own
+
+## Configuration
+
+
+## Credentials
+admin@avarts.lan - adminadmin
+
+## FAQ
+
+## TODO
+- Edit activities
+- Remove activities
+- Create manual activity
+- Speed graph
+- Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
+- Merge route if multiple laps in fit file
+- Track equipment
+- Better time notation
+- Fix screenshot when reuploading activity
+- Disable registration
+
+## License

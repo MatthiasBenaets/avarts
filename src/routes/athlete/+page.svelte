@@ -81,7 +81,7 @@
       </div>
       <div class="w-3/4 pl-4 text-neutral-100 flex flex-col">
         <label for="avatar" class="w-32">
-          <div class="relative">
+          <div class="relative" title="Max 5MB">
             {#if data.user.avatar}
               <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" id="avatarImg" class="h-32 w-32 object-cover rounded-full hover:cursor-pointer">
             {:else}
