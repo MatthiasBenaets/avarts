@@ -141,36 +141,52 @@
 
     const formElement = event.target as HTMLFormElement;
     formData = new FormData(formElement);
+    let test = formData.get('tot_distance')
 
     formData.append('user', data.user.id)
-    if (parsedData.activity.sessions[0].avg_speed != undefined) {
-      formData.append('avg_speed', parsedData.activity.sessions[0].avg_speed)
+    if (!test) {
+      if (parsedData.activity.sessions[0].avg_speed != undefined) {
+        formData.append('avg_speed', parsedData.activity.sessions[0].avg_speed)
+      } else {
+        formData.append('avg_speed', (parsedData.activity.sessions[0].enhanced_avg_speed).toFixed(2))
+      }
+      formData.append('avg_cadence', parsedData.activity.sessions[0].avg_cadence)
+      formData.append('avg_power', parsedData.activity.sessions[0].avg_power)
+      if (parsedData.activity.sessions[0].max_speed != undefined) {
+        formData.append('max_speed', parsedData.activity.sessions[0].max_speed)
+      } else {
+        formData.append('max_speed', parsedData.activity.sessions[0].enhanced_max_speed)
+      }
+      formData.append('max_cadence', parsedData.activity.sessions[0].max_cadence)
+      formData.append('max_power', parsedData.activity.sessions[0].max_power)
+      formData.append('norm_power', parsedData.activity.sessions[0].normalized_power)
+      formData.append('avg_hr', parsedData.activity.sessions[0].avg_heart_rate)
+      formData.append('max_hr', parsedData.activity.sessions[0].max_heart_rate)
+      formData.append('sport', parsedData.activity.sessions[0].sport)
+      formData.append('tot_elevation', parsedData.activity.sessions[0].total_ascent)
+      formData.append('tot_calories', parsedData.activity.sessions[0].total_calories)
+      formData.append('tot_distance', parsedData.activity.sessions[0].total_distance)
+      formData.append('start_time', formatTime(parsedData.activity.sessions[0].start_time))
+      formData.append('elap_time', parsedData.activity.sessions[0].total_elapsed_time)
+      formData.append('tot_time', parsedData.activity.sessions[0].total_timer_time)
+      formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
+      formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
+      formData.append('img', screenshotBlob, 'activity.png');
+      formData.append('location', location)
+      console.log(formatTime(parsedData.activity.sessions[0].start_time))
     } else {
-      formData.append('avg_speed', (parsedData.activity.sessions[0].enhanced_avg_speed).toFixed(2))
-    }
-    formData.append('avg_cadence', parsedData.activity.sessions[0].avg_cadence)
-    formData.append('avg_power', parsedData.activity.sessions[0].avg_power)
-    if (parsedData.activity.sessions[0].max_speed != undefined) {
-      formData.append('max_speed', parsedData.activity.sessions[0].max_speed)
-    } else {
-      formData.append('max_speed', parsedData.activity.sessions[0].enhanced_max_speed)
-    }
-    formData.append('max_cadence', parsedData.activity.sessions[0].max_cadence)
-    formData.append('max_power', parsedData.activity.sessions[0].max_power)
-    formData.append('norm_power', parsedData.activity.sessions[0].normalized_power)
-    formData.append('avg_hr', parsedData.activity.sessions[0].avg_heart_rate)
-    formData.append('max_hr', parsedData.activity.sessions[0].max_heart_rate)
-    formData.append('sport', parsedData.activity.sessions[0].sport)
-    formData.append('tot_elevation', parsedData.activity.sessions[0].total_ascent)
-    formData.append('tot_calories', parsedData.activity.sessions[0].total_calories)
-    formData.append('tot_distance', parsedData.activity.sessions[0].total_distance)
-    formData.append('start_time', formatTime(parsedData.activity.sessions[0].start_time))
-    formData.append('elap_time', parsedData.activity.sessions[0].total_elapsed_time)
-    formData.append('tot_time', parsedData.activity.sessions[0].total_timer_time)
-    formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
-    formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
-    formData.append('img', screenshotBlob, 'activity.png');
-    formData.append('location', location)
+      let time = formData.get('start_time')
+      let duration = formData.get('elap_time')
+      let elevation = formData.get('tot_elevation')
+      let distance = formData.get('tot_distance')
+      formData.delete('start_time')
+      formData.delete('elap_time')
+      formData.delete('tot_elevation')
+      formData.append('start_time', formatTime(time))
+      formData.append('elap_time', duration * 60)
+      formData.append('tot_elevation', elevation / 1000)
+      formData.append('avg_speed', distance/(duration/60))
+    };
 
     // create post or if error received, show error
     let response
@@ -209,30 +225,78 @@
       {#if process}
         <p class="text-white">Processing file, please wait...</p>
       {/if}
-      {#if parsedData}
-        <form id="activity" method="POST" on:submit={handleSubmit}>
-          <div class="flex flex-col text-white pt-4">
+      {#if !gpx}
+        <h2 class="text-2xl text-white font-semibold mt-5">Or Enter Manually</h2>
+      {/if}
+      <form id="activity" method="POST" on:submit={handleSubmit}>
+        <div class="flex flex-col text-white pt-4">
+          <table>
+            <tr>
+              <td>
+                <span>Activity Name:</span>
+              </td>
+              <td>
+                <input bind:value={activity} type="text" name="name" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" placeholder="Required" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Description:</span>
+              </td>
+              <td>
+                <textarea name="description" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" placeholder="Activity Notes"></textarea>
+              </td>
+            </tr>
+            {#if !parsedData}
+              <tr>
+                <td>
+                  <span>Date:</span>
+                </td>
+                <td>
+                  <input name="start_time" type="datetime-local" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" placeholder="Activity Notes" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>Activity type:</span>
+                </td>
+                <td>
+                  <select name="sport" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full">
+                    <option value="cycling">Cycling</option>
+                    <option value="running">Running</option>
+                    <option value="swimming">Swimming</option>
+                  </select>
+                </td>
+              </tr>
+            {/if}
+          </table>
+          {#if !parsedData}
             <table>
               <tr>
-                <td>
-                  <span>Activity Name:</span>
+                <td class="w-1/3">
+                  <span>Distance:</span>
+                  <div class="flex flex-row">
+                    <input name="tot_distance" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" />km
+                  </div>
                 </td>
-                <td>
-                  <input bind:value={activity} type="text" name="name" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" placeholder="Required" />
+                <td class="w-1/3">
+                  <span>Duration:</span>
+                  <div class="flex flex-row">
+                    <input name="elap_time" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" /> min
+                  </div>
+                </td>
+                <td class="w-1/3">
+                  <span>elevation:</span>
+                  <div class="flex flex-row">
+                    <input name="tot_elevation" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" />m
+                  </div>
                 </td>
               </tr>
-              <tr>
-                <td>
-                  <span>Description:</span>
-                </td>
-                <td>
-                  <textarea name="description" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" placeholder="Activity Notes"></textarea>
-                </td>
-              </tr>
+              <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 p-2 px-10 mt-5">Create</button>
             </table>
-          </div>
-        </form>
-      {/if}
+          {/if}
+        </div>
+      </form>
     </div>
     {#if screenshotBlob}
       <div class="flex flex-row w-1/2">
@@ -242,6 +306,10 @@
         <div class="flex justify-center items-center w-1/2">
           <button class="text-xl rounded-xl bg-neutral-600 text-white hover:bg-neutral-500 border border-neutral-400 p-5 px-20" onClick="history.go(0)">Cancel</button>
         </div>
+      </div>
+    {:else if parsedData}
+      <div class="flex justify-center items-center w-1/2">
+        <p class="text-white">Processing file, please wait...</p>
       </div>
     {/if}
   </div>

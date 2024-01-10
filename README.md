@@ -51,7 +51,6 @@ admin@avarts.lan - adminadmin
 ## FAQ
 
 ## TODO
-- Create manual activity
 - Edit activities
 - Better time notation
 - Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
@@ -60,9 +59,12 @@ admin@avarts.lan - adminadmin
 - Estimated time recalculate distance / average speed last 10 activities (of same sport type)
 - Track equipment
 - Compress/simplify generated GPX files
+- better input error management
 - Analysis and Laps per activity
 - Custom charts for gpx using d3
 
+- DONE Create manual activity
+- DONE Don't show data if a metric does not exist
 - DONE Merge route if multiple laps in fit file
 - DONE Speed graph
 - DONE Fix screenshot when reuploading activity

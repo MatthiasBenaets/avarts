@@ -63,12 +63,14 @@
         </li>
       </ul>
     </div>
-    <div>
-      <a href="/activities/{id}">
-      <div class="h-full">
-      <img src="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}" alt="">
-        <div>
-      </a>
-    </div>
+    {#if img}
+      <div>
+        <a href="/activities/{id}">
+        <div class="h-full">
+        <img src="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}" alt="">
+          <div>
+        </a>
+      </div>
+    {/if}
   </div>
 </div>

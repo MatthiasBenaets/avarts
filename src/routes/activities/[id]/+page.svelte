@@ -133,12 +133,16 @@
             <div class="pb-5 border-b border-neutral-500">
               <ul class="flex flex-wrap text-white">
                 <li class="pr-5">
-                  <span class="text-xl">{data.norm_power} </span><span class="text-md">w</span><br>
-                  <span class="text-sm text-neutral-500">Weighted Avg<br> Power</span>
+                  {#if data.norm_power}
+                    <span class="text-xl">{data.norm_power} </span><span class="text-md">w</span><br>
+                    <span class="text-sm text-neutral-500">Weighted Avg<br> Power</span>
+                  {/if}
                 </li>
                 <li>
-                  <span class="text-xl">{data.tot_calories} </span><span class="text-md">kJ</span><br>
-                  <span class="text-sm text-neutral-500">Total Work</span>
+                  {#if data.tot_calories}
+                    <span class="text-xl">{data.tot_calories} </span><span class="text-md">kJ</span><br>
+                    <span class="text-sm text-neutral-500">Total Work</span>
+                  {/if}
                 </li>
               </ul>
             </div>
@@ -150,35 +154,53 @@
                 <tr>
                   <th></th>
                   <th class="text-start">Avg</th>
-                  <th class="text-start">Max</th>
+                  {#if data.max_speed || data.max_hr || data.max_cadence || data.max_power}
+                    <th class="text-start">Max</th>
+                  {/if}
                 </tr>
                 <tr>
                   <td>Speed</td>
-                  <td>{(data.avg_speed).toFixed(2)} km/h</td>
-                  <td>{(data.max_speed).toFixed(2)} km/h</td>
+                  {#if data.avg_speed}
+                    <td>{(data.avg_speed).toFixed(2)} km/h</td>
+                  {/if}
+                  {#if data.max_speed}
+                    <td>{(data.max_speed).toFixed(2)} km/h</td>
+                  {/if}
                 </tr>
-                <tr>
-                  <td>Heart Rate</td>
-                  <td>{data.avg_hr} bpm</td>
-                  <td>{data.max_hr} bpm</td>
-                </tr>
-                <tr>
-                  <td>Cadence</td>
-                  <td>{data.avg_cadence}</td>
-                  <td>{data.max_cadence}</td>
-                </tr>
-                <tr>
-                  <td>Power</td>
-                  <td>{data.avg_power} W</td>
-                  <td>{data.max_power} W</td>
-                </tr>
-                <tr>
-                  <td>Calories</td>
-                  <td>{data.tot_calories}</td>
-                </tr>
+                {#if data.avg_hr || data.max_hr }
+                  <tr>
+                    <td>Heart Rate</td>
+                    <td>{data.avg_hr} bpm</td>
+                    <td>{data.max_hr} bpm</td>
+                  </tr>
+                {/if}
+                {#if data.avg_cadence || data.max_cadence}
+                  <tr>
+                    <td>Cadence</td>
+                    <td>{data.avg_cadence}</td>
+                    <td>{data.max_cadence}</td>
+                  </tr>
+                {/if}
+                {#if data.avg_power || data.max_power}
+                  <tr>
+                    <td>Power</td>
+                    <td>{data.avg_power} W</td>
+                    <td>{data.max_power} W</td>
+                  </tr>
+                {/if}
+                {#if data.tot_calories}
+                  <tr>
+                    <td>Calories</td>
+                    <td>{data.tot_calories}</td>
+                  </tr>
+                {/if}
                 <tr>
                   <td>Elapsed Time</td>
-                  <td>{new Date(data.tot_time * 1000).toISOString().substring(11, 19)}</td>
+                  {#if data.tot_time}
+                    <td>{new Date(data.tot_time * 1000).toISOString().substring(11, 19)}</td>
+                  {:else}
+                    <td>{new Date(data.elap_time * 1000).toISOString().substring(11, 19)}</td>
+                  {/if}
                 </tr>
               </tbody>
             </table>
@@ -196,12 +218,14 @@
       </div>
     </div>
 
-    <div class="mt-5 border border-neutral-500 bg-neutral-800">
-      <div class="h-[400px] border-b border-neutral-500">
-        <Leaflet view={initialView} zoom={13} gpx={gpx} from="activity"/>
+    {#if data.gpx}
+      <div class="mt-5 border border-neutral-500 bg-neutral-800">
+        <div class="h-[400px] border-b border-neutral-500">
+          <Leaflet view={initialView} zoom={13} gpx={gpx} from="activity"/>
+        </div>
+        <div class="h-[330px]">
+        </div>
       </div>
-      <div class="h-[330px]">
-      </div>
-    </div>
+    {/if}
   </div>
 </div>
