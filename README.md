@@ -36,7 +36,14 @@ For now, the platform is mainly focused on running, cycling and swimming.
 > Update the api keys to your own
 
 ## Configuration
+pocketbase change size of files if needed (profile now max 5MB)
+can be set with BODY_SIZE_LIMIT
+a 100k ride is about 2 to 2.5MB
 
+
+get a graphhopper and location api on your own to prevent limits:
+routing: https://www.graphhopper.com/
+location: https://geocode.maps.co/
 
 ## Credentials
 admin@avarts.lan - adminadmin
@@ -44,15 +51,21 @@ admin@avarts.lan - adminadmin
 ## FAQ
 
 ## TODO
-- Edit activities
-- Remove activities
 - Create manual activity
-- Speed graph
-- Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
-- Merge route if multiple laps in fit file
-- Track equipment
+- Edit activities
 - Better time notation
-- Fix screenshot when reuploading activity
+- Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
+- Pocketbase edit user permission rules (who can edit and delete)
 - Disable registration
+- Estimated time recalculate distance / average speed last 10 activities (of same sport type)
+- Track equipment
+- Compress/simplify generated GPX files
+- Analysis and Laps per activity
+- Custom charts for gpx using d3
+
+- DONE Merge route if multiple laps in fit file
+- DONE Speed graph
+- DONE Fix screenshot when reuploading activity
+- DONE Remove activities
 
 ## License

@@ -111,7 +111,7 @@
       </h1>
     </div>
     <div class="w-full h-[450px]">
-      <Leaflet view={initialView} zoom={13} gpx={gpx} from="activity"/>
+      <Leaflet view={initialView} zoom={13} gpx={gpx} from="route"/>
     </div>
   </div>
 </div>

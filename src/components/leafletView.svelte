@@ -66,7 +66,25 @@
         distanceMarkers: false,
         edgeScale: false,
       }).addTo(map);
-    } else if (from =="activity") {
+    } else if (from == "activity") {
+      elevationControl = L.control.elevation({
+        srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
+        // detached: true,
+        // position: "bottomleft",
+        slope: "summary",
+        altitude: true,
+        time: false,
+        speed: true,
+        summary: false,
+        followMarker: true,
+        autofitBounds: true,
+        legend: false,
+        waypoints: false,
+        wptLabels: false,
+        downloadLink: false,
+        closeBtn: false,
+      }).addTo(map);
+    } else if (from == "route") {
       elevationControl = L.control.elevation({
         srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
         // detached: true,
@@ -85,7 +103,6 @@
       }).addTo(map);
     }
 
-    // L.simpleMapScreenshoter(screenshotOptions).addTo(map)
     simpleMapScreenshoter = L.simpleMapScreenshoter(screenshotOptions).addTo(map);
 
   });
@@ -93,7 +110,7 @@
   $: if (gpx) {
     if (from == "upload") {
       elevationControl.load(gpx);
-    } else if (from == "activity") {
+    } else if (from == "activity" || from == "route") {
       onMount(() => {
         elevationControl.load(gpx);
       });

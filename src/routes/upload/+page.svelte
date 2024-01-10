@@ -1,7 +1,7 @@
 <script lang="ts">
   // @ts-nocheck
   import FitParser from "fit-file-parser";
-  import { formatDate, formatTime } from "$lib/utils"
+  import { formatDate, formatTime, formatTimeGPX } from "$lib/utils"
 	import Leaflet from "$components/leafletView.svelte";
   import { env } from "$env/dynamic/public";
 
@@ -110,24 +110,29 @@
       <link href="this is the link to the athlete" />
     </author>
     <copyright author="OpenStreetMap contributors">
-     <year>2020</year>
-     <license>https://www.openstreetmap.org/copyright</license>
+      <year>2020</year>
+      <license>https://www.openstreetmap.org/copyright</license>
     </copyright>
     <link href="link to router" />
   </metadata>
   <trk>
     <name>name of activity</name>
     <type>cycling</type>
-    <trkseg>
-      ${routeData.activity.sessions[0].laps[0].records
-        .filter(coord => coord !== undefined && coord.position_lat !== undefined && coord.position_long !== undefined)
-        .map((coord, index) =>`<trkpt lat="${coord.position_lat}" lon="${coord.position_long}">
-        <ele>${coord.enhanced_altitude * 1000}</ele>
-      </trkpt>`).join('\n')}
-    </trkseg>
+    ${routeData.activity.sessions.map(session => {
+      return session.laps.map(lap => {
+        return `<trkseg>
+          ${lap.records
+            .filter(coord => coord !== undefined && coord.position_lat !== undefined && coord.position_long !== undefined)
+            .map((coord) => `<trkpt lat="${coord.position_lat}" lon="${coord.position_long}">
+              <ele>${coord.enhanced_altitude * 1000}</ele>
+              <time>${formatTimeGPX(coord.timestamp)}</time>
+            </trkpt>`).join('\n')}
+        </trkseg>`;
+      }).join('\n');
+    }).join('\n')}
   </trk>
 </gpx>
-    `;
+  `;
     return gpx;
   }
 
@@ -198,7 +203,9 @@
   <h1 class="text-3xl text-white font-semibold">Upload Your Activity</h1>
   <div class="flex flex-row">
     <div class="flex flex-col my-5 w-1/2">
+      {#if !gpx}
       <input type="file" name="fit" form="activity" accept=".fit" on:change={handleFileChange} class="text-white"/>
+      {/if}
       {#if process}
         <p class="text-white">Processing file, please wait...</p>
       {/if}
@@ -228,8 +235,13 @@
       {/if}
     </div>
     {#if screenshotBlob}
-      <div class="flex items-center justify-center w-1/2">
-        <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 w-1/2 h-1/2">Upload</button>
+      <div class="flex flex-row w-1/2">
+        <div class="flex justify-center items-center w-1/2">
+          <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 p-5 px-20">Upload</button>
+        </div>
+        <div class="flex justify-center items-center w-1/2">
+          <button class="text-xl rounded-xl bg-neutral-600 text-white hover:bg-neutral-500 border border-neutral-400 p-5 px-20" onClick="history.go(0)">Cancel</button>
+        </div>
       </div>
     {/if}
   </div>

@@ -3,6 +3,7 @@
   import { onMount, onDestroy, setContext, createEventDispatcher, tick } from 'svelte';
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
+  import { env } from '$env/dynamic/public';
   import 'leaflet-routing-machine';
   import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
   import 'leaflet-control-geocoder';
@@ -54,7 +55,7 @@
   let graphApi;
 
   onMount(async() => {
-    const env = await import ('$env/dynamic/public')
+    // const env = await import ('$env/dynamic/public')
     graphApi = env.PUBLIC_GRAPHHOPPER_API
     if (!graphApi)  {
       const { PUBLIC_GRAPHHOPPER_API } = await import ('$env/static/public')
