@@ -52,10 +52,10 @@
       totals = await pb.collection("activities").getFullList({filter: `user = "${data.user.id}"`, fields: "id, name, sport, start_time, tot_distance, tot_elevation, tot_time"})
 
       // get activities of last 4 weeks
-      month = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `start_time > "${formattedDate}"`});
+      month = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `user = "${data.user.id}" && start_time > "${formattedDate}"`});
 
       // get activities from current year
-      year = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `start_time >= "${currentYear}-01-01"`});
+      year = await pb.collection('activities').getFullList({ sort: '-start_time', filter: `user = "${data.user.id}" && start_time >= "${currentYear}-01-01"`});
     }
     ready = true
   })

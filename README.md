@@ -48,19 +48,48 @@ location: https://geocode.maps.co/
 ## Credentials
 admin@avarts.lan - adminadmin
 
+## Images
+
+**Home Page**
+<br/>
+<img src="/static/home.png" alt="Avarts Home Page" width="500">
+<br/>
+**Route Builder**
+<br/>
+<img src="/static/builder.png" alt="Avarts Route Builder" width="500">
+<br/>
+**Activity Viewer**
+<br/>
+<img src="/static/activity.png" alt="Avarts Activity Viewer" width="500">
+<br/>
+**Course List**
+<br/>
+<img src="/static/routes.png" alt="Avarts Course List" width="500">
+<br/>
+**Route Viewer**
+<br/>
+<img src="/static/route.png" alt="Avarts Route Viewer" width="500">
+<br/>
+**Activity Uploader**
+<br/>
+<img src="/static/upload.png" alt="Avarts Activity Uploader" width="500">
+<br/>
+
 ## FAQ
 
 ## TODO
-- Pocketbase edit user permission rules (who can edit and delete)
-- Disable registration
 - Estimated time recalculate distance / average speed last 10 activities (of same sport type)
+- Disable registration
 - Track equipment
-- Compress/simplify generated GPX files
 - better input error management
+- Compress/simplify generated GPX files
+- Look for alternative to graphhopper
 - Analysis and Laps per activity
 - Custom charts for gpx using d3
 - Fix route creator summary close button click-through
 
+
+- DONE User interaction privileges
 - DONE Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
 - DONE Better time notation
 - DONE Delete confirmation

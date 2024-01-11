@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { formatDate } from '$lib/utils.js';
+  import { userCookie } from "$lib/stores";
 
+  let user = $userCookie.user
   export let data
+
+  if (user.id != data.user) {
+    window.location.href = "/";
+  };
 </script>
 
 
+{#if user.id == data.user}
 <div class="px-5 pt-5">
   <div class="flex flex-row justify-between border-b border-neutral-400 pb-5">
     <h1 class="text-3xl text-white font-semibold p-1">Edit Activity</h1>
@@ -68,3 +75,4 @@
     </div>
   </div>
 </div>
+{/if}

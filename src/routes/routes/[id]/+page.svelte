@@ -1,10 +1,17 @@
 <script lang="ts">
   import { pb } from '$lib/database';
 	import Leaflet from "$components/leafletView.svelte";
+  import { userCookie } from "$lib/stores";
 
   export let data;
+  let remove = false;
+  let user = $userCookie.user
   let gpx = `http://127.0.0.1:8090/api/files/${data.collectionId}/${data.id}/${data.gpx}`
   const initialView = [0,0];
+
+  if (user.id != data.user) {
+    window.location.href = "/";
+  };
 
   async function deleteRoute(route) {
     await pb.collection('routes').delete(route);
@@ -12,6 +19,7 @@
   }
 </script>
 
+{#if user.id == data.user}
 <div class="flex flex-row text-white mt-5 ml-10">
   <a href="/routes" class="flex flex-row text-orange-600 hover:text-orange-700">
     <svg class="mt-1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
@@ -34,9 +42,16 @@
         </h1>
       </div>
       <div>
-        <button on:click={deleteRoute(data.id)} class="text-neutral-400 hover:text-orange-600">
+        {#if remove == false}
+        <button on:click={() => remove = true} class="text-neutral-400 hover:text-orange-600">
           <svg class="mt-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
         </button>
+        {:else}
+          <div class="flex flex-col pt-1">
+            <button on:click={deleteRoute(data.id)} class="text-xs text-neutral-400 border-b border-neutral-400 hover:text-orange-600">YES</button>
+            <button on:click={() => remove = false} class="text-xs text-neutral-400 hover:text-orange-600">NO</button>
+          </div>
+        {/if}
       </div>
     </div>
     <div class="mb-5 mt-3 text-xl text-neutral-400">
@@ -115,6 +130,7 @@
     </div>
   </div>
 </div>
+{/if}
 
 <style>
 :global(.background){
