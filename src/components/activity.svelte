@@ -22,7 +22,7 @@
             {user.name}
           </a>
         </span>
-        <span>{formatDate(date)} · {location}</span>
+        <span>{formatDate(date)} {#if location} · {location}{/if}</span>
       </div>
     </div>
     <div class="flex text-white mt-4">

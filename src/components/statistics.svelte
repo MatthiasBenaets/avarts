@@ -1,4 +1,6 @@
 <script lang="ts">
+  //@ts-nocheck
+  import { formatSumTime } from "$lib/utils"
   export let records, month, year;
   let currentYear = new Date().getFullYear()
   let activityType = "cycling";
@@ -85,7 +87,7 @@
             Avg Time / Week
           </td>
           <td>
-            {(month.filter(item => item.sport === activityType).reduce((sum, month) => sum + month.tot_time, 0) / 60 / 60 / 4).toFixed(2)} h
+            {formatSumTime(month.filter(item => item.sport === activityType).reduce((sum, month) => sum + month.tot_time, 0))}
           </td>
         </tr>
       </tbody>
@@ -124,7 +126,7 @@
             Time
           </td>
           <td>
-            {(year.filter(item => item.sport === activityType).reduce((sum, year) => sum + year.tot_time, 0) / 60 / 60).toFixed(2)} h
+            {formatSumTime(year.filter(item => item.sport === activityType).reduce((sum, year) => sum + year.tot_time, 0))}
           </td>
         </tr>
       </tbody>
@@ -164,7 +166,7 @@
             Time
           </td>
           <td>
-            {(records.filter(item => item.sport === activityType).reduce((sum, records) => sum + records.tot_time, 0) / 60 / 60).toFixed(2)} h
+            {formatSumTime(records.filter(item => item.sport === activityType).reduce((sum, records) => sum + records.tot_time, 0))}
           </td>
         </tr>
         <tr class="border-b border-neutral-500">

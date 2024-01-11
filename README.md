@@ -51,9 +51,6 @@ admin@avarts.lan - adminadmin
 ## FAQ
 
 ## TODO
-- Edit activities
-- Better time notation
-- Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
 - Pocketbase edit user permission rules (who can edit and delete)
 - Disable registration
 - Estimated time recalculate distance / average speed last 10 activities (of same sport type)
@@ -62,7 +59,12 @@ admin@avarts.lan - adminadmin
 - better input error management
 - Analysis and Laps per activity
 - Custom charts for gpx using d3
+- Fix route creator summary close button click-through
 
+- DONE Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
+- DONE Better time notation
+- DONE Delete confirmation
+- DONE Edit activities
 - DONE Create manual activity
 - DONE Don't show data if a metric does not exist
 - DONE Merge route if multiple laps in fit file

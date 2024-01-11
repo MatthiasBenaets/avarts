@@ -3,10 +3,14 @@
 	import type { Post } from "$lib/types";
 	import Leaflet from "$components/leafletView.svelte";
   import { pb } from "$lib/database";
+  import { userCookie } from "$lib/stores";
+
+  let user = $userCookie.user
 
   export let data: Post;
 
   let gpx = data.url
+  let confirm = false;
   const initialView = [0,0];
 
   async function remove() {
@@ -23,7 +27,7 @@
           Overview
         </li>
       </a>
-      <a href="/">
+      <!-- <a href="/">
         <li class="p-3 pl-5 text-xl border-b border-neutral-500 hover:bg-neutral-900">
           Analysis
         </li>
@@ -32,23 +36,26 @@
         <li class="p-3 pl-5 text-xl hover:bg-neutral-900">
           Laps
         </li>
-      </a>
+      </a> -->
     </ul>
     <ul class="mt-5 flex text-white border border-neutral-500 bg-neutral-800">
-      <a href="/" class="w-1/2">
-        <li class="p-3 pl-5 border-e border-neutral-500 flex items-center justify-center hover:bg-neutral-900 hover:text-orange-500">
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-          </div>
-        </li>
-      </a>
-      <a href="/" class="w-1/2">
+      <!-- <a href="/" class="w-1/2"> -->
+      {#if data.expand.user.id == user.id}
+        <a href="/activities/{data.id}/edit" class="w-full">
+          <li class="p-3 pl-5 border-e border-neutral-500 flex items-center justify-center hover:bg-neutral-900 hover:text-orange-500">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+            </div>
+          </li>
+        </a>
+      {/if}
+      <!-- <a href="/" class="w-1/2">
         <li class="p-3 pl-5 flex items-center justify-center hover:bg-neutral-900 hover:text-orange-500">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
           </div>
         </li>
-      </a>
+      </a> -->
     </ul>
   </div>
   <div class="w-[85%]">
@@ -69,16 +76,34 @@
           </div>
           <div class="">
             <lu class="h-full flex text-white list-none">
-              <button class="w-12 h-full border-s border-neutral-500 hover:text-orange-500 hover:bg-neutral-800" on:click={remove}>
-                <li class="flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </li>
-              </button>
-              <button class="h-full w-12 border-s border-neutral-500 hover:text-orange-500 hover:bg-neutral-800">
+              {#if data.expand.user.id == user.id}
+                {#if confirm == false}
+                  <button class="w-12 h-full border-s border-neutral-500 hover:text-orange-500 hover:bg-neutral-800" on:click={() => confirm = true}>
+                    <li class="flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    </li>
+                  </button>
+                {:else}
+                  <li class="flex items-center justify-center">
+                    <p class="font-semibold pr-2">Delete ?
+                  </li>
+                  <button class="w-12 h-full border-s border-neutral-500 hover:text-orange-500 hover:bg-neutral-800" on:click={remove}>
+                    <li class="flex items-center justify-center">
+                      YES
+                    </li>
+                  </button>
+                  <button class="w-12 h-full border-s border-neutral-500 hover:text-orange-500 hover:bg-neutral-800" on:click={() => confirm = false}>
+                    <li class="flex items-center justify-center">
+                      NO
+                    </li>
+                  </button>
+                {/if}
+              {/if}
+              <!-- <button class="h-full w-12 border-s border-neutral-500 hover:text-orange-500 hover:bg-neutral-800">
                 <li class="flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
                 </li>
-              </button>
+              </button> -->
             </lu>
           </div>
         </div>

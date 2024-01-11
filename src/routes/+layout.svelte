@@ -1,8 +1,10 @@
 <script lang="ts">
   import "../app.css";
   import Header from "./header.svelte";
+  import { userCookie } from "$lib/stores"
 
   export let data;
+  $userCookie = data;
 </script>
 
 <div class="min-h-screen bg-neutral-700" data-sveltekit-prefetch>

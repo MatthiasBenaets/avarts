@@ -17,6 +17,8 @@
   let location = ""
   let locationApi;
 
+  let date, distance, duration
+
   const initialView = [0, 0];
 
   const handleFileChange = (event) => {
@@ -64,8 +66,13 @@
   }
 
   async function getLocation() {
+    if (parsedData.activity.device_infos[0].manufacturer == "zwift") {
+      location = "Zwift"
+      return
+    }
+
     try {
-      const apiUrl = `https://geocode.maps.co/reverse?lat=${parsedData.activity.sessions[0].start_position_lat}&lon=${parsedData.activity.sessions[0].start_position_long}&api_key=${locationApi}`;
+      const apiUrl = `https://geocode.maps.co/reverse?lat=${(parsedData.activity.sessions[0].start_position_lat ? parsedData.activity.sessions[0].start_position_lat : parsedData.activity.sessions[0].laps[0].records[0].position_lat)}&lon=${(parsedData.activity.sessions[0].start_position_long ? parsedData.activity.sessions[0].start_position_long : parsedData.activity.sessions[0].laps[0].records[0].position_long)}&api_key=${locationApi}`;
 
       const response = await fetch(apiUrl);
       const data = await response.json();
@@ -124,7 +131,7 @@
           ${lap.records
             .filter(coord => coord !== undefined && coord.position_lat !== undefined && coord.position_long !== undefined)
             .map((coord) => `<trkpt lat="${coord.position_lat}" lon="${coord.position_long}">
-              <ele>${coord.enhanced_altitude * 1000}</ele>
+              <ele>${(coord.enhanced_altitude ? coord.enhanced_altitude : coord.altitude) * 1000}</ele>
               <time>${formatTimeGPX(coord.timestamp)}</time>
             </trkpt>`).join('\n')}
         </trkseg>`;
@@ -141,12 +148,12 @@
 
     const formElement = event.target as HTMLFormElement;
     formData = new FormData(formElement);
-    let test = formData.get('tot_distance')
+    let manualCheck = formData.get('tot_distance')
 
     formData.append('user', data.user.id)
-    if (!test) {
+    if (!manualCheck) {
       if (parsedData.activity.sessions[0].avg_speed != undefined) {
-        formData.append('avg_speed', parsedData.activity.sessions[0].avg_speed)
+        formData.append('avg_speed', parsedData.activity.sessions[0].avg_speed.toFixed(2))
       } else {
         formData.append('avg_speed', (parsedData.activity.sessions[0].enhanced_avg_speed).toFixed(2))
       }
@@ -173,7 +180,6 @@
       formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
       formData.append('img', screenshotBlob, 'activity.png');
       formData.append('location', location)
-      console.log(formatTime(parsedData.activity.sessions[0].start_time))
     } else {
       let time = formData.get('start_time')
       let duration = formData.get('elap_time')
@@ -184,8 +190,9 @@
       formData.delete('tot_elevation')
       formData.append('start_time', formatTime(time))
       formData.append('elap_time', duration * 60)
+      formData.append('tot_time', duration * 60)
       formData.append('tot_elevation', elevation / 1000)
-      formData.append('avg_speed', distance/(duration/60))
+      formData.append('avg_speed', (distance/(duration/60)).toFixed(2))
     };
 
     // create post or if error received, show error
@@ -216,27 +223,42 @@
 </script>
 
 <div class="px-5 pt-5">
-  <h1 class="text-3xl text-white font-semibold">Upload Your Activity</h1>
+  <div class="flex flex-row border-b border-neutral-400 w-full pb-5 justify-between">
+    <h1 class="text-3xl text-white font-semibold p-1">Upload Your Activity</h1>
+    {#if (activity && date && distance && duration) || screenshotBlob}
+      <button type="submit" form="activity" class="bg-orange-600 px-14 py-2 rounded-md font-semibold text-white hover:bg-orange-700">Create</button>
+    {/if}
+    <!-- {#if screenshotBlob} -->
+      <!-- <div class="flex flex-row w-1/2">
+        <div class="flex justify-center items-center w-1/2">
+          <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 p-5 px-20">Upload</button>
+        </div>
+        <div class="flex justify-center items-center w-1/2">
+          <button class="text-xl rounded-xl bg-neutral-600 text-white hover:bg-neutral-500 border border-neutral-400 p-5 px-20" onClick="history.go(0)">Cancel</button>
+        </div>
+      </div> -->
+    <!-- {/if} -->
+  </div>
   <div class="flex flex-row">
     <div class="flex flex-col my-5 w-1/2">
       {#if !gpx}
-      <input type="file" name="fit" form="activity" accept=".fit" on:change={handleFileChange} class="text-white"/>
+      <input type="file" name="fit" form="activity" accept=".fit" on:change={handleFileChange} class="text-white my-10"/>
       {/if}
       {#if process}
         <p class="text-white">Processing file, please wait...</p>
       {/if}
       {#if !gpx}
-        <h2 class="text-2xl text-white font-semibold mt-5">Or Enter Manually</h2>
+        <h2 class="text-2xl text-white font-semibold mt-5 border-b border-neutral-400 mb-5">Or Enter Manually</h2>
       {/if}
       <form id="activity" method="POST" on:submit={handleSubmit}>
         <div class="flex flex-col text-white pt-4">
           <table>
             <tr>
               <td>
-                <span>Activity Name:</span>
+                <span>Activity Name<span class="text-red-600">*</span>:</span>
               </td>
               <td>
-                <input bind:value={activity} type="text" name="name" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" placeholder="Required" />
+                <input bind:value={activity} type="text" name="name" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" placeholder="Required" />
               </td>
             </tr>
             <tr>
@@ -244,24 +266,24 @@
                 <span>Description:</span>
               </td>
               <td>
-                <textarea name="description" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" placeholder="Activity Notes"></textarea>
+                <textarea name="description" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" placeholder="Activity Notes"></textarea>
               </td>
             </tr>
             {#if !parsedData}
               <tr>
                 <td>
-                  <span>Date:</span>
+                  <span>Date<span class="text-red-600">*</span>:</span>
                 </td>
                 <td>
-                  <input name="start_time" type="datetime-local" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" placeholder="Activity Notes" />
+                  <input bind:this={date} name="start_time" type="datetime-local" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" placeholder="Activity Notes" />
                 </td>
               </tr>
               <tr>
                 <td>
-                  <span>Activity type:</span>
+                  <span>Activity type<span class="text-red-600">*</span>:</span>
                 </td>
                 <td>
-                  <select name="sport" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full">
+                  <select name="sport" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full p-1">
                     <option value="cycling">Cycling</option>
                     <option value="running">Running</option>
                     <option value="swimming">Swimming</option>
@@ -271,43 +293,33 @@
             {/if}
           </table>
           {#if !parsedData}
-            <table>
+            <table class="mt-1">
               <tr>
                 <td class="w-1/3">
-                  <span>Distance:</span>
-                  <div class="flex flex-row">
-                    <input name="tot_distance" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" />km
+                  <span class="mr-3">Distance<span class="text-red-600">*</span>:</span>
+                  <div class="flex flex-row mr-3">
+                    <input bind:value={distance} name="tot_distance" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">km</span>
                   </div>
                 </td>
                 <td class="w-1/3">
-                  <span>Duration:</span>
-                  <div class="flex flex-row">
-                    <input name="elap_time" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" /> min
+                  <span class="mx-5">Duration<span class="text-red-600">*</span>:</span>
+                  <div class="flex flex-row mx-3">
+                    <input bind:value={duration} name="elap_time" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">min.</span>
                   </div>
                 </td>
                 <td class="w-1/3">
-                  <span>elevation:</span>
-                  <div class="flex flex-row">
-                    <input name="tot_elevation" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic" rows="1" />m
+                  <span class="ml-3">elevation:</span>
+                  <div class="flex flex-row ml-3">
+                    <input name="tot_elevation" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">m</span>
                   </div>
                 </td>
               </tr>
-              <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 p-2 px-10 mt-5">Create</button>
             </table>
           {/if}
         </div>
       </form>
     </div>
-    {#if screenshotBlob}
-      <div class="flex flex-row w-1/2">
-        <div class="flex justify-center items-center w-1/2">
-          <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 p-5 px-20">Upload</button>
-        </div>
-        <div class="flex justify-center items-center w-1/2">
-          <button class="text-xl rounded-xl bg-neutral-600 text-white hover:bg-neutral-500 border border-neutral-400 p-5 px-20" onClick="history.go(0)">Cancel</button>
-        </div>
-      </div>
-    {:else if parsedData}
+    {#if !screenshotBlob && parsedData}
       <div class="flex justify-center items-center w-1/2">
         <p class="text-white">Processing file, please wait...</p>
       </div>
@@ -319,150 +331,184 @@
   {#if parsedData}
     <div class="w-1/3">
       <table class=" text-white text-sm">
-        <tr>
-          <td>
-            <span>Sport Type:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].sport}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Start Time:</span>
-          </td>
-          <td class="pl-2">
-            <span>{formatTime(parsedData.activity.sessions[0].start_time).split('.')[0]}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Total Elapsed Time:</span>
-          </td>
-          <td class="pl-2">
-            <span>{new Date(parsedData.activity.sessions[0].total_elapsed_time * 1000).toISOString().substring(11, 19)}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Total Time:</span>
-          </td>
-          <td class="pl-2">
-            <span>{new Date(parsedData.activity.sessions[0].total_timer_time * 1000).toISOString().substring(11, 19)}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Total Distance:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].total_distance.toFixed(2)} km</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Total Ascent:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].total_ascent * 1000} m</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Total Calories:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].total_calories} calories</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Average Speed:</span>
-          </td>
-          <td class="pl-2">
-          {#if parsedData.activity.sessions[0].avg_speed != undefined}
-            <span>{parsedData.activity.sessions[0].avg_speed.toFixed(2)} km/h</span>
-          {:else}
-            <span>{parsedData.activity.sessions[0].enhanced_avg_speed.toFixed(2)} km/h</span>
-          {/if}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Average Cadence:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].avg_cadence} rpm</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Average Heart Rate:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].avg_heart_rate} bpm</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Average Power:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].avg_power} W</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Max Speed:</span>
-          </td>
-          <td class="pl-2">
-            {#if parsedData.activity.sessions[0].max_speed != undefined}
-            <span>{parsedData.activity.sessions[0].max_speed.toFixed(2)} km/h</span>
+        {#if parsedData.activity.sessions[0].sport}
+          <tr>
+            <td>
+              <span>Sport Type:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].sport}</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].start_time}
+          <tr>
+            <td>
+              <span>Start Time:</span>
+            </td>
+            <td class="pl-2">
+              <span>{formatTime(parsedData.activity.sessions[0].start_time).split('.')[0]}</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].total_elapsed_time}
+          <tr>
+            <td>
+              <span>Total Elapsed Time:</span>
+            </td>
+            <td class="pl-2">
+              <span>{new Date(parsedData.activity.sessions[0].total_elapsed_time * 1000).toISOString().substring(11, 19)}</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].total_timer_time}
+          <tr>
+            <td>
+              <span>Total Time:</span>
+            </td>
+            <td class="pl-2">
+              <span>{new Date(parsedData.activity.sessions[0].total_timer_time * 1000).toISOString().substring(11, 19)}</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].total_distance}
+          <tr>
+            <td>
+              <span>Total Distance:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].total_distance.toFixed(2)} km</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].total_ascent}
+          <tr>
+            <td>
+              <span>Total Ascent:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].total_ascent * 1000} m</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].total_calories}
+          <tr>
+            <td>
+              <span>Total Calories:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].total_calories} calories</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].avg_speed || parsedData.activity.sessions[0].enhanced_avg_speed}
+          <tr>
+            <td>
+              <span>Average Speed:</span>
+            </td>
+            <td class="pl-2">
+            {#if parsedData.activity.sessions[0].avg_speed != undefined}
+              <span>{parsedData.activity.sessions[0].avg_speed.toFixed(2)} km/h</span>
             {:else}
-              <span>{parsedData.activity.sessions[0].enhanced_max_speed.toFixed(2)} km/h</span>
+              <span>{parsedData.activity.sessions[0].enhanced_avg_speed.toFixed(2)} km/h</span>
             {/if}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Max Cadence:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].max_cadence} rpm</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Max Heart Rate:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].max_heart_rate} bpm</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Max Power:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].max_power} W</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>Normalized Power:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].normalized_power} W</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span>TSS:</span>
-          </td>
-          <td class="pl-2">
-            <span>{parsedData.activity.sessions[0].training_stress_score}</span>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].avg_cadence}
+          <tr>
+            <td>
+              <span>Average Cadence:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].avg_cadence} rpm</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].avg_heart_rate}
+          <tr>
+            <td>
+              <span>Average Heart Rate:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].avg_heart_rate} bpm</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].avg_power}
+          <tr>
+            <td>
+              <span>Average Power:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].avg_power} W</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].max_speed || parsedData.activity.sessions[0].enhanced_max_speed}
+          <tr>
+            <td>
+              <span>Max Speed:</span>
+            </td>
+            <td class="pl-2">
+              {#if parsedData.activity.sessions[0].max_speed != undefined}
+              <span>{parsedData.activity.sessions[0].max_speed.toFixed(2)} km/h</span>
+              {:else}
+                <span>{parsedData.activity.sessions[0].enhanced_max_speed.toFixed(2)} km/h</span>
+              {/if}
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].max_cadence}
+          <tr>
+            <td>
+              <span>Max Cadence:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].max_cadence} rpm</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].max_heart_rate}
+          <tr>
+            <td>
+              <span>Max Heart Rate:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].max_heart_rate} bpm</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].max_power}
+          <tr>
+            <td>
+              <span>Max Power:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].max_power} W</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].normalized_power}
+          <tr>
+            <td>
+              <span>Normalized Power:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].normalized_power} W</span>
+            </td>
+          </tr>
+        {/if}
+        {#if parsedData.activity.sessions[0].training_stress_score}
+          <tr>
+            <td>
+              <span>TSS:</span>
+            </td>
+            <td class="pl-2">
+              <span>{parsedData.activity.sessions[0].training_stress_score}</span>
+            </td>
+          </tr>
+        {/if}
       </table>
     </div>
   {/if}

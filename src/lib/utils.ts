@@ -27,7 +27,7 @@ export function formatTime(time) {
 
   // Create the desired format
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-}
+};
 
 export function formatTimeGPX(time) {
   const dateString = time;
@@ -45,8 +45,18 @@ export function formatTimeGPX(time) {
 
   // Create the desired format
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
-}
+};
 
 export const serializeNonPOJOs = (obj: any) => {
 	return structuredClone(obj);
+};
+
+export function formatSumTime(time) {
+  let hours = Math.floor(time / 3600);
+  let remainingSeconds = time % 3600;
+
+  let minutes = Math.floor(remainingSeconds / 60);
+
+  // return { hours: hours, minutes: minutes };
+  return `${hours}h ${minutes}m`;
 };
