@@ -12,9 +12,10 @@ services:
     volumes:
       - data:/app/db/pb_data
     environment:
+      - BODY_SIZE_LIMIT=20971520
       - PUBLIC_GRAPHHOPPER_API=0e8e8ec3-0b05-4cd4-a75a-232cc8455ecb
       - PUBLIC_LOCATION_API=6595ca1312f47773878382wbie28477
-      - BODY_SIZE_LIMIT=20971520
+      - PUBLIC_REGISTRATION=true
 
 volumes:
   data:

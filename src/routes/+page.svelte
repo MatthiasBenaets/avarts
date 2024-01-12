@@ -1,6 +1,7 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte';
   import { pb } from '$lib/database';
+  import { env } from '$env/dynamic/public';
   import Profile from '$components/profile.svelte'
   import Activity from '$components/activity.svelte'
   import Statistics from '$components/statistics.svelte'
@@ -128,13 +129,15 @@
 {:else}
   <div class="flex grow">
     <div class="mx-auto mt-20 h-20">
-      <button on:click={ifRegister} class="mb-2 p-1 rounded-xl bg-orange-600 text-white hover:bg-orange-700 w-20">
-        {#if !register}
-          register
-        {:else}
-          login
-        {/if}
-      </button>
+      {#if env.PUBLIC_REGISTRATION == "true"}
+        <button on:click={ifRegister} class="mb-2 p-1 rounded-xl bg-orange-600 text-white hover:bg-orange-700 w-20">
+          {#if !register}
+            register
+          {:else}
+            login
+          {/if}
+        </button>
+      {/if}
       {#if !register}
         <form action="?/login" method="POST" class="flex flex-col items-center w-full">
           <div class="w-full mb-5">

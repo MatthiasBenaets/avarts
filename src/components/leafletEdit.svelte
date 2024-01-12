@@ -4,6 +4,8 @@
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   import { env } from '$env/dynamic/public';
+  import { pb } from '$lib/database';
+  import { userCookie } from '$lib/stores';
   import 'leaflet-routing-machine';
   import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
   import 'leaflet-control-geocoder';
@@ -13,6 +15,7 @@
   import '@raruto/leaflet-elevation/src/index.css';
 
   import 'leaflet-simple-map-screenshoter';
+	import Activity from './activity.svelte';
 
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
@@ -35,10 +38,11 @@
 
   let distance: number = 0;
   let elevationGain: number = 0;
-  let estimatedTime: number = 0;
+  // let estimatedTime: number = 0;
 
   let type = "cycling";
   let mode = "bike";
+  let activities;
 
   let formData
 
@@ -53,9 +57,9 @@
   }
 
   let graphApi;
+  let averageSpeed = 0;
 
   onMount(async() => {
-    // const env = await import ('$env/dynamic/public')
     graphApi = env.PUBLIC_GRAPHHOPPER_API
     if (!graphApi)  {
       const { PUBLIC_GRAPHHOPPER_API } = await import ('$env/static/public')
@@ -163,7 +167,7 @@
 
       distance = route.summary.totalDistance;
       elevationGain = route.summary.totalAscend;
-      estimatedTime = route.summary.totalTime;
+      // estimatedTime = route.summary.totalTime;
 
       if (!elevationControl) {
         elevationControl = L.control.elevation({
@@ -201,7 +205,16 @@
       routingControl?.route();
 
       courseName = routeData.title;
+
+      activities = await pb.collection('activities').getList(1, 10, {filter: `user = "${$userCookie.user.id}" && sport = "${routeData.sport}"`, sort: '-start_time'});
+    } else {
+      activities = await pb.collection('activities').getList(1, 10, {filter: `user = "${$userCookie.user.id}" && sport = "${type}"`, sort: '-start_time'});
     };
+
+    for (var i=0; i < activities.items.length; i++){
+      averageSpeed += activities.items[i].avg_speed
+    }
+    averageSpeed = averageSpeed / activities.items.length
   });
 
   onDestroy(() => {
@@ -301,7 +314,8 @@
     formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
     formData.append('distance', distance);
     formData.append('elevation', elevationGain);
-    formData.append('time', estimatedTime);
+    // formData.append('time', estimatedTime);
+    formData.append('time', ((distance/1000)/(averageSpeed) * 60 * 60).toFixed(0));
     formData.append('sport', type);
     formData.append('img', screenshotBlob, 'route.png')
     formData.append('builder', JSON.stringify(route))
@@ -334,7 +348,8 @@
     formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
     formData.append('distance', distance);
     formData.append('elevation', elevationGain);
-    formData.append('time', estimatedTime);
+    // formData.append('time', estimatedTime);
+    formData.append('time', ((distance/1000)/(averageSpeed) * 60 * 60).toFixed(0));
     formData.append('sport', type);
     formData.append('img', screenshotBlob, 'route.png')
     formData.append('builder', JSON.stringify(route))
@@ -376,7 +391,7 @@
     }
   }
 
-  const handleClick = () => {
+  const handleClick = async() => {
     switch (type) {
       case 'cycling':
         type = 'running';
@@ -396,6 +411,13 @@
     // switch routing method and update route
     routingControl.options.router.options.urlParameters.vehicle = mode;
     routingControl.route();
+
+    activities = await pb.collection('activities').getList(1, 10, {filter: `user = "${$userCookie.user.id}" && sport = "${type}"`, sort: '-start_time'});
+    averageSpeed = 0;
+    for (var i=0; i < activities.items.length; i++){
+      averageSpeed += activities.items[i].avg_speed
+    }
+    averageSpeed = averageSpeed / activities.items.length
   };
 </script>
 
@@ -432,8 +454,7 @@
     <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
       <span class="text-white text-sm">Est. Moving Time</span>
       <span class="text-neutral-400 text-2xl font-semibold">
-        <!-- slow estimated time, this make it ~30km/h -->
-        {#if estimatedTime}{(estimatedTime / 60 / 1.7).toFixed(0)}{:else}0{/if} min.
+        {#if averageSpeed}{((distance/1000)/(averageSpeed) * 60).toFixed(0)}{/if} min.
       </span>
     </div>
     <div class="flex flex-row w-[39%]">

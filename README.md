@@ -42,8 +42,11 @@ a 100k ride is about 2 to 2.5MB
 
 
 get a graphhopper and location api on your own to prevent limits:
-routing: https://www.graphhopper.com/
-location: https://geocode.maps.co/
+routing: https://www.graphhopper.com/ - PUBLIC_GRAPHHOPPER_API
+location: https://geocode.maps.co/ - PUBLIC_LOCATION_API
+
+registration: enable/disable - PUBLIC_REGISTRATION
+
 
 ## Credentials
 admin@avarts.lan - adminadmin
@@ -78,8 +81,6 @@ admin@avarts.lan - adminadmin
 ## FAQ
 
 ## TODO
-- Estimated time recalculate distance / average speed last 10 activities (of same sport type)
-- Disable registration
 - Track equipment
 - better input error management
 - Compress/simplify generated GPX files
@@ -87,18 +88,6 @@ admin@avarts.lan - adminadmin
 - Analysis and Laps per activity
 - Custom charts for gpx using d3
 - Fix route creator summary close button click-through
-
-
-- DONE User interaction privileges
-- DONE Adapt code for parsed fit data fields (speed vs enhanced speed vs zwift vs etc.)
-- DONE Better time notation
-- DONE Delete confirmation
-- DONE Edit activities
-- DONE Create manual activity
-- DONE Don't show data if a metric does not exist
-- DONE Merge route if multiple laps in fit file
-- DONE Speed graph
-- DONE Fix screenshot when reuploading activity
-- DONE Remove activities
+- Loop for alternative to graphhopper (free and unlimited waypoints)
 
 ## License

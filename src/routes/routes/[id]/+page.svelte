@@ -83,7 +83,7 @@
             <div class="border-t border-neutral-500 flex flex-row py-2">
               <!-- 0.6 because of free elevation api not being very accurate -->
               <svg class="mt-1 mr-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/><path d="M4.14 15.08c2.62-1.57 5.24-1.43 7.86.42 2.74 1.94 5.49 2 8.23.19"/></svg>
-              {(data.elevation * 0.6).toFixed(2)} m
+              {(data.elevation * 0.6).toFixed(0)} m
 
             </div>
           </td>
@@ -93,7 +93,7 @@
             <div class="mr-3 border-t border-neutral-500 flex flex-row py-2">
               <!-- slow estimated time, this make it ~30km/h -->
               <svg class="mt-1 mr-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              {(data.time / 60 / 1.7).toFixed(2)} min.
+              {(data.time / 60).toFixed(0)} min.
             </div>
           </td>
         </tr>
