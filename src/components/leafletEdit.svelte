@@ -15,7 +15,6 @@
   import '@raruto/leaflet-elevation/src/index.css';
 
   import 'leaflet-simple-map-screenshoter';
-	import Activity from './activity.svelte';
 
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
@@ -87,11 +86,20 @@
       routeWhileDragging: true,
       geocoder: L.Control.Geocoder.nominatim(),
       // users might need to provider their own.
-      router: L.Routing.graphHopper(graphApi, {
-        urlParameters: {
-          vehicle: mode,
-        }
-      }),
+      router: env.PUBLIC_OSRM ?
+        L.Routing.osrmv1({
+          serviceUrl: env.PUBLIC_OSRM,
+          urlParameters: {
+            vehicle: mode,
+          }
+        })
+      : env.PUBLIC_GRAPHHOPPER_API ?
+        L.Routing.graphHopper(graphApi, {
+          urlParameters: {
+            vehicle: mode,
+          }
+        })
+      : null,
       showAlternatives: true,
       lineOptions: {
         styles: [{ color: 'orange', opacity: 0.2, weight: 10 }]
@@ -186,6 +194,7 @@
           legend: false,
           waypoints: false,
           wptLabels: false,
+          closeBtn: false,
         }).addTo(map);
       }
 
@@ -544,5 +553,8 @@
 }
 :global(.leaflet-routing-container){
   display: none;
+}
+:global(.elevation-toggle-icon){
+  pointer-events: auto;
 }
 </style>

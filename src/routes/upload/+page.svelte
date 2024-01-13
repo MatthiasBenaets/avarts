@@ -225,19 +225,9 @@
 <div class="px-5 pt-5">
   <div class="flex flex-row border-b border-neutral-400 w-full pb-5 justify-between">
     <h1 class="text-3xl text-white font-semibold p-1">Upload Your Activity</h1>
-    {#if (activity && date && distance && duration) || screenshotBlob}
+    {#if (activity && date && distance && duration) || (activity && screenshotBlob)}
       <button type="submit" form="activity" class="bg-orange-600 px-14 py-2 rounded-md font-semibold text-white hover:bg-orange-700">Create</button>
     {/if}
-    <!-- {#if screenshotBlob} -->
-      <!-- <div class="flex flex-row w-1/2">
-        <div class="flex justify-center items-center w-1/2">
-          <button type="submit" form="activity" class="text-xl rounded-xl bg-orange-500 text-white hover:bg-orange-600 p-5 px-20">Upload</button>
-        </div>
-        <div class="flex justify-center items-center w-1/2">
-          <button class="text-xl rounded-xl bg-neutral-600 text-white hover:bg-neutral-500 border border-neutral-400 p-5 px-20" onClick="history.go(0)">Cancel</button>
-        </div>
-      </div> -->
-    <!-- {/if} -->
   </div>
   <div class="flex flex-row">
     <div class="flex flex-col my-5 w-1/2">
@@ -298,19 +288,19 @@
                 <td class="w-1/3">
                   <span class="mr-3">Distance<span class="text-red-600">*</span>:</span>
                   <div class="flex flex-row mr-3">
-                    <input bind:value={distance} name="tot_distance" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">km</span>
+                    <input bind:value={distance} name="tot_distance" type="number" step="0.1" min="0" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">km</span>
                   </div>
                 </td>
                 <td class="w-1/3">
                   <span class="mx-5">Duration<span class="text-red-600">*</span>:</span>
                   <div class="flex flex-row mx-3">
-                    <input bind:value={duration} name="elap_time" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">min.</span>
+                    <input bind:value={duration} name="elap_time" type="number" step="1" min="0" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">min.</span>
                   </div>
                 </td>
                 <td class="w-1/3">
                   <span class="ml-3">elevation:</span>
                   <div class="flex flex-row ml-3">
-                    <input name="tot_elevation" type="text" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">m</span>
+                    <input name="tot_elevation" type="number" step="1" min="0" class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1" rows="1" /><span class="mt-1">m</span>
                   </div>
                 </td>
               </tr>

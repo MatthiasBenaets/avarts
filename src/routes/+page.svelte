@@ -8,6 +8,8 @@
   import type { Post } from '$lib/types';
 
   export let data;
+  export let form;
+  let username: string, name: string, password: string = '', confirm: string;
   let records: Post[] = [];
   let ready: boolean
   let loadingMore: boolean = false;
@@ -129,7 +131,7 @@
 {:else}
   <div class="flex grow">
     <div class="mx-auto mt-20 h-20">
-      {#if env.PUBLIC_REGISTRATION == "true"}
+      {#if env.PUBLIC_REGISTRATION == "true" || env.PUBLIC_REGISTRATION == undefined}
         <button on:click={ifRegister} class="mb-2 p-1 rounded-xl bg-orange-600 text-white hover:bg-orange-700 w-20">
           {#if !register}
             register
@@ -139,6 +141,11 @@
         </button>
       {/if}
       {#if !register}
+        {#if form?.login}
+          <div class="flex w-full items-center justify-center">
+            <p class="text-red-600">Incorrect credentials</p>
+          </div>
+        {/if}
         <form action="?/login" method="POST" class="flex flex-col items-center w-full">
           <div class="w-full mb-5">
             <label for="username" class="pb-1 text-white">
@@ -164,29 +171,39 @@
             <label for="username" class="pb-1 text-white">
               <span>Username</span>
             </label>
-            <input type="text" name="username" class="w-full border p-2 rounded-xl" />
+            <input bind:value={username} type="text" name="username" class="w-full border p-2 rounded-xl" />
           </div>
           <div class="w-full mb-5">
             <label for="name" class="pb-1 text-white">
               <span>Name</span>
             </label>
-            <input type="text" name="name" class="w-full border p-2 rounded-xl" />
+            <input bind:value={name} type="text" name="name" class="w-full border p-2 rounded-xl" />
           </div>
           <div class="w-full mb-5">
+            {#if password != '' && password.length < 8}
+              <div class="flex justify-center items-center w-full">
+                <p class="text-red-600">Password needs to at least 8 characters long</p>
+              </div>
+            {/if}
             <label for="password" class="pb-1 text-white">
               <span>Password</span>
               </label>
-              <input type="password" name="password" class="w-full border p-2 rounded-xl" />
+              <input bind:value={password} type="password" name="password" class="w-full border p-2 rounded-xl" />
             </div>
+            {#if password != '' && password != confirm }
+              <p class="text-red-600">Passwords do not match</p>
+            {/if}
             <div class="w-full mb-5">
               <label for="password" class="pb-1 text-white">
                 <span>Verify Password</span>
               </label>
-              <input type="password" name="passwordConfirm" class="w-full border p-2 rounded-xl" />
+              <input bind:value={confirm} type="password" name="passwordConfirm" class="w-full border p-2 rounded-xl" />
             </div>
             <div>
               <!-- submit the form -->
-              <button type="submit" class="mx-auto p-2 rounded-xl bg-orange-600 text-white hover:bg-orange-700">Register</button>
+              <div style="{username != undefined && name != undefined && password != undefined && confirm != undefined && confirm == password && password.length >= 8 ? '' : 'cursor: not-allowed;'}">
+                <button type="submit" class="mx-auto p-2 rounded-xl bg-orange-600 text-white hover:bg-orange-700" style="{username != undefined && name != undefined && password != undefined && confirm != undefined && confirm == password && password.length >= 8 ? '' : 'pointer-events: none;'}">Register</button>
+              </div>
             </div>
           </form>
         {/if}

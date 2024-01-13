@@ -67,7 +67,7 @@
       <h1 class="text-3xl text-white font-semibold">
         My Profile
       </h1>
-      {#if edit == true}
+      {#if edit == true && data.user.name && data.user.weight >= 0}
         <button form="update" class="p-2 px-5 bg-orange-600 text-white rounded-full">
           Save
         </button>
@@ -112,7 +112,7 @@
         </div>
         <div class="w-3/4 pl-4 text-neutral-100 flex flex-row">
           {#if edit == true && name == true}
-            <input type="text" name="name" class="bg-neutral-600 border border-neutral-400 rounded-md" value={data.user.name}/>
+            <input type="text" name="name" class="bg-neutral-600 border border-neutral-400 rounded-md" bind:value={data.user.name}/>
           {:else}
             <span class="pr-2">{data.user.name}</span>
             <svg class="hidden group-hover:block mt-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
@@ -128,7 +128,7 @@
         <div class="w-3/4 pl-4 text-neutral-100 flex flex-row" on:click={() => {edit=true; weight=true}} role="button" tabindex="0" aria-hidden="true">
           <span>
             {#if edit == true && weight == true}
-              <input type="text" name="weight" class="bg-neutral-600 border border-neutral-400 rounded-md w-10" value={data.user.weight}/>
+              <input type="number" step="0.1" min="0" name="weight" class="bg-neutral-600 border border-neutral-400 rounded-md w-16" bind:value={data.user.weight}/>
             {:else}
               {data.user.weight}
             {/if}

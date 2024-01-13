@@ -2,8 +2,8 @@
 	import { formatDate } from '$lib/utils.js';
   import { userCookie } from "$lib/stores";
 
-  let user = $userCookie.user
-  export let data
+  export let data;
+  let user = $userCookie.user;
 
   if (user.id != data.user) {
     window.location.href = "/";
@@ -15,13 +15,15 @@
 <div class="px-5 pt-5">
   <div class="flex flex-row justify-between border-b border-neutral-400 pb-5">
     <h1 class="text-3xl text-white font-semibold p-1">Edit Activity</h1>
-    <button type="submit" form="update" class="bg-orange-600 px-14 py-2 rounded-md font-semibold text-white hover:bg-orange-700">Save</button>
+    {#if data.name}
+      <button type="submit" form="update" class="bg-orange-600 px-14 py-2 rounded-md font-semibold text-white hover:bg-orange-700">Save</button>
+    {/if}
   </div>
   <div class="flex flex-row">
     <form id="update" action="?/update" method="POST" class="flex flex-row w-2/3" enctype="multipart/form-data">
       <div class="flex flex-col w-7/12 text-white">
         <p class="mt-3 font-semibold">Title</p>
-        <input type="text" name="name" value={data.name} class="bg-neutral-800 border border-neutral-500 rounded-md mt-2 p-1"/>
+        <input type="text" name="name" bind:value={data.name} class="bg-neutral-800 border border-neutral-500 rounded-md mt-2 p-1"/>
         <p class="mt-3 font-semibold">Description</p>
         <textarea name="description" value={data.description} class="bg-neutral-800 border border-neutral-500 rounded-md text-white w-full placeholder-slate-300 placeholder-opacity-50 placeholder:italic p-1 mt-2" rows="5" placeholder="Activity Notes"></textarea>
       </div>

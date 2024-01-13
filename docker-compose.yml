@@ -6,16 +6,29 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: avarts
+    restart: always
     ports:
-      - "8080:8080"
-      - "8090:8090"
+      - 8080:8080
+      - 8090:8090
     volumes:
       - data:/app/db/pb_data
     environment:
       - BODY_SIZE_LIMIT=20971520
-      - PUBLIC_GRAPHHOPPER_API=0e8e8ec3-0b05-4cd4-a75a-232cc8455ecb
-      - PUBLIC_LOCATION_API=6595ca1312f47773878382wbie28477
       - PUBLIC_REGISTRATION=true
+      # - PUBLIC_OSRM=http://0.0.0.0:5000/route/v1
+      # - PUBLIC_GRAPHHOPPER_API=0e8e8ec3-0b05-4cd4-a75a-232cc8455ecb
+      - PUBLIC_LOCATION_API=6595ca1312f47773878382wbie28477
+
+  # osrm:
+  #   image: osrm/osrm-backend
+  #   container_name: osrm
+  #   restart: always
+  #   ports:
+  #     - 5000:5000
+  #   volumes:
+  #     - ./osrm:/data
+  #   command: "osrm-routed --max-matching-size 1000 --max-table-size 1000 --max-viaroute-size 1000 --algorithm mld /data/benelux.osrm"
 
 volumes:
   data:

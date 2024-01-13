@@ -19,7 +19,7 @@ export const actions = {
       if (err.status === 400 || err.status === 401) {
         console.log('Error: ', err);
         return {
-          email: true,
+          login: true,
         };
       } else {
 			  return error(500, 'Something went wrong logging in');
