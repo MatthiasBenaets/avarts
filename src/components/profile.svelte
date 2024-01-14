@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let data, records
+  import type { UserData, Exercises } from "$lib/types";
+
+  export let data: UserData, records: Exercises;
 </script>
 
 <div class="flex flex-col sticky top-20 left-0">

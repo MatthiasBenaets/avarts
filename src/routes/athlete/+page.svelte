@@ -1,20 +1,22 @@
 <script lang="ts">
-  export let data;
+  import type { UserData } from "$lib/types";
 
-  let edit = false;
-  let remove = false;
-  let update = false;
-  let name = false;
-  let weight = false;
+  export let data: UserData;
+
+  let edit: boolean = false;
+  let remove: boolean = false;
+  let update: boolean = false;
+  let name: boolean = false;
+  let weight: boolean = false;
   let formData;
 
-  const showAvatar = (event) => {
-    const target = event.target
+  const showAvatar = (event: Event) => {
+    const target = event.target as HTMLInputElement
     const files = target.files
 
-    if (files.length > 0) {
+    if (files && files.length > 0) {
       const src = URL.createObjectURL(files[0])
-      const preview = document.getElementById('avatarImg')
+      const preview = document.getElementById('avatarImg') as HTMLInputElement;
       preview.src = src;
     }
 
@@ -23,7 +25,7 @@
   }
 
   function removeAvatar() {
-    const preview = document.getElementById('avatarImg')
+    const preview = document.getElementById('avatarImg') as HTMLInputElement;
     preview.src= "/avatar.svg";
     remove = true;
     edit = true;
@@ -42,8 +44,6 @@
       formData.delete('avatar')
     }
     formData.append('id', data.user.id)
-
-    console.log(formData)
 
     let response
     try {

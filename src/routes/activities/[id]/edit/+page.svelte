@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { formatDate } from '$lib/utils.js';
   import { userCookie } from "$lib/stores";
+	import type { Exercise } from '$lib/types';
 
-  export let data;
+  export let data: Exercise;
   let user = $userCookie.user;
 
   if (user.id != data.user) {
@@ -38,7 +39,7 @@
     </form>
     <div class="flex flex-col w-1/3">
       <div class="flex flex-col bg-neutral-800 mt-4">
-        <img src="{data.image}" />
+        <img src="{data.image}" alt="activity thumbnail"/>
         <table class="w-full text-white">
           <tr>
             <td class="font-semibold px-5 p-1 pt-5">

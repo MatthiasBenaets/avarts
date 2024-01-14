@@ -1,4 +1,4 @@
-export function formatDate(dateString: string) {
+export function formatDate(dateString: string | Date) {
   const fullDate = new Date(dateString);
   const today = new Date
   const time = fullDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -10,7 +10,7 @@ export function formatDate(dateString: string) {
   };
 };
 
-export function formatTime(time) {
+export function formatTime(time: string | Date) {
   const dateString = time;
 
   // Create a new Date object from the given string
@@ -29,7 +29,7 @@ export function formatTime(time) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}Z`;
 };
 
-export function formatTimeGPX(time) {
+export function formatTimeGPX(time: string | Date) {
   const dateString = time;
 
   // Create a new Date object from the given string
@@ -51,7 +51,7 @@ export const serializeNonPOJOs = (obj: any) => {
 	return structuredClone(obj);
 };
 
-export function formatSumTime(time) {
+export function formatSumTime(time: number) {
   let hours = Math.floor(time / 3600);
   let remainingSeconds = time % 3600;
 

@@ -11,17 +11,16 @@
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
   export let zoom: number | undefined = undefined;
-  export let gpx, from: string;
+  export let gpx: string , from: string;
 
   const dispatch = createEventDispatcher();
 
   let map: L.Map | undefined;
   let mapElement: HTMLElement;
 
-  let route
-  let elevationControl: any;
+  let elevationControl: L.elevationControl | undefined;
 
-  let simpleMapScreenshoter;
+  let simpleMapScreenshoter: L.simpleMapScreenshoter | undefined;
   let screenshotOptions = {
     cropImageByInnerWH: true,
     hidden: true,
@@ -37,7 +36,7 @@
 
     map = L.map(mapElement)
       .on('zoom', (e: MouseEvent) => dispatch('zoom', e))
-      .on('popupopen', async (e) => {
+      .on('popupopen', async (e: L.map) => {
         await tick();
         e.popup.update();
       });

@@ -1,19 +1,17 @@
 <script lang="ts">
 	import { onMount } from "svelte";
   import { pb } from '$lib/database';
+  import type { Courses } from '$lib/types';
 
   export let data;
   let ready;
-  let routes = [];
+  let routes: Courses = [];
 
   onMount(async () => {
     if (data.user) {
       // get all activities for feed
-      routes = await pb.collection('routes').getFullList(
-        { sort: '-created'},
-        { filter: `user = "${data.user.id}"`, expand: "user" },
-      )
-    }
+      routes = await pb.collection('routes').getFullList({ sort: '-created', filter: `user = "${data.user.id}"`, expand: "user" })
+    };
     ready = true;
   });
 </script>

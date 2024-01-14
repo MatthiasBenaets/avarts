@@ -2,8 +2,9 @@
   import { pb } from '$lib/database';
 	import Leaflet from "$components/leafletView.svelte";
   import { userCookie } from "$lib/stores";
+  import type { Course } from '$lib/types';
 
-  export let data;
+  export let data: Course;
   let remove = false;
   let user = $userCookie.user
   let gpx = `http://127.0.0.1:8090/api/files/${data.collectionId}/${data.id}/${data.gpx}`
@@ -13,7 +14,7 @@
     window.location.href = "/";
   };
 
-  async function deleteRoute(route) {
+  async function deleteRoute(route: string) {
     await pb.collection('routes').delete(route);
     window.location.href="/routes";
   }

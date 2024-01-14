@@ -2,8 +2,9 @@
   import "../app.css";
   import Header from "./header.svelte";
   import { userCookie } from "$lib/stores"
+  import type { UserData } from "$lib/types";
 
-  export let data;
+  export let data: UserData;
   $userCookie = data;
 </script>
 

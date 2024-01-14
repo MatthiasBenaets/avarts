@@ -1,10 +1,11 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import type { UserData } from '$lib/types';
 
-  export let data;
+  export let data: UserData;
 
-  let showMenu = false;
-  let currentPage;
+  let showMenu: boolean = false;
+  let currentPage: string;
 
   function toggleNavbar() {
     showMenu = !showMenu;

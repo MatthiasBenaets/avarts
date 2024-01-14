@@ -6,7 +6,7 @@ export const actions = {
 
 		try {
 			await locals.pb.collection('activities').update(params.id, formData);
-		} catch (err) {
+		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
 		};

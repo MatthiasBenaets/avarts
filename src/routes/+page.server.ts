@@ -2,7 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/public';
 
 const generateRandomString = () => {
-  let r = (Math.random() + 1).toString(36).substring(2);
+  let r: string = (Math.random() + 1).toString(36).substring(2);
   return r
 }
 
@@ -14,7 +14,7 @@ export const actions = {
 		try {
       // try to log in
 			await locals.pb.collection('users').authWithPassword(formData.username, formData.password);
-		} catch (err) {
+		} catch (err: any) {
       // if error returned, send prop with email = true (will show message on screen)
       if (err.status === 400 || err.status === 401) {
         console.log('Error: ', err);
@@ -37,7 +37,7 @@ export const actions = {
 
       try {
         await locals.pb.collection('users').create(formData);
-      } catch (err) {
+      } catch (err: any) {
         // if error returned, send prop with email = true (will show message on screen)
         if (err.status === 400 || err.status === 401) {
           console.log('Error: ', err);

@@ -12,7 +12,6 @@
   <a href="#images">Images</a> •
   <a href="#FAQ">FAQ</a> •
   <a href="#TODO">To Do</a> •
-  <a href="#license">License</a>
 </p>
 
 ---
@@ -260,6 +259,8 @@ This key can be passed as a variable `PUBLIC_LOCATION_API`.
 <b>A:</b> GraphHopper self-hosted > OSRM self-hosted > GraphHopper API > OSRM demo server
 
 ## TODO
+- Store fit file
+- Screen dimension support
 - Allow reset password
 - Custom charts for gpx using d3 - Analysis and Laps per activity
 - Track equipment

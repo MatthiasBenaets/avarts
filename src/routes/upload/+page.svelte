@@ -1,33 +1,35 @@
 <script lang="ts">
-  // @ts-nocheck
   import FitParser from "fit-file-parser";
   import { formatDate, formatTime, formatTimeGPX } from "$lib/utils"
 	import Leaflet from "$components/leafletView.svelte";
   import { env } from "$env/dynamic/public";
+	import type { UserData } from "$lib/types";
 
-  export let data;
-  let fileContent = null;
-  let parsedData = null;
-  let gpx = null;
+  export let data: UserData;
+  let fileContent: any = null;
+  let parsedData: any = null;
+  let gpx: any = null;
   let process = false;
-  let screenshotBlob
-  let leafletView
-  let formData = new FormData()
-  let activity = ""
-  let location = ""
-  let locationApi;
+  let screenshotBlob: Blob;
+  let leafletView: Leaflet;
+  let formData: any = new FormData();
+  let activity: string = "";
+  let location: string = "";
+  let locationApi: string;
 
-  let date, distance, duration
+  let date: Date, distance: number, duration: number
 
   const initialView = [0, 0];
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event: Event) => {
     process = true;
-    const file = event.target.files[0];
+    // const file = event.target.files[0];
+    const fileInput = event.target as HTMLInputElement;
+    const file = fileInput.files?.[0];
     const reader = new FileReader();
 
     reader.onload = () => {
-      fileContent = new Uint8Array(reader.result);
+      fileContent = new Uint8Array(reader.result as ArrayBuffer);
       convertFile();
     };
 
@@ -44,7 +46,7 @@
       mode: "cascade",
     });
 
-    fitParser.parse(fileContent, (error, data) => {
+    fitParser.parse(fileContent, (error: Error, data: any) => {
       process = false;
       if (error) {
         console.error(error);
@@ -88,8 +90,8 @@
   }
 
   function setTitle(){
-    let type = "";
-    let date = "";
+    let type: string = "";
+    let date: string = "";
     switch (parsedData.activity.sessions[0].sport) {
       case 'cycling':
         type = "Ride"

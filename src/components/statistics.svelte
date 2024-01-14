@@ -1,14 +1,14 @@
 <script lang="ts">
-  //@ts-nocheck
   import { formatSumTime } from "$lib/utils"
-  export let records, month, year;
+  import type { Exercises } from "$lib/types";
+  export let records: Exercises, month: Exercises, year: Exercises;
   let currentYear = new Date().getFullYear()
-  let activityType = "cycling";
+  let activityType: string = "cycling";
 
   $: maxDistanceActivity = calculateMaxDistance(records, activityType);
   $: maxElevationActivity = calculateMaxElevation(records, activityType);
 
-  function calculateMaxDistance(records, activityType) {
+  function calculateMaxDistance(records: Exercises, activityType: string) {
     const filteredRecords = records.filter((item) => item.sport === activityType);
     return filteredRecords.length > 0
       ? filteredRecords.reduce((max, record) =>
@@ -17,7 +17,7 @@
       : { tot_distance: 0 };
   }
 
-  function calculateMaxElevation(records, activityType) {
+  function calculateMaxElevation(records: Exercises, activityType: string) {
     const filteredRecords = records.filter((item) => item.sport === activityType);
     return filteredRecords.length > 0
       ? filteredRecords.reduce((max, record) =>

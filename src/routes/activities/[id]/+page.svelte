@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
-	import type { Post } from "$lib/types";
+	import type { Exercise, UserData } from "$lib/types";
 	import Leaflet from "$components/leafletView.svelte";
   import { pb } from "$lib/database";
   import { userCookie } from "$lib/stores";
 
-  let user = $userCookie.user
-
-  export let data: Post;
+  let user: UserData = $userCookie.user
+  export let data: Exercise;
 
   let gpx = data.url
   let confirm = false;

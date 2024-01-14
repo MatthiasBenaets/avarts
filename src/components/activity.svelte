@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
+  import type { User } from "$lib/types";
 
-  export let date: string, name: string, id: string, distance: number, speed: string, elevation: string, time: string, collectionId: string, img: string, sport: string, user, location: string;
+  export let date: Date, name: string, id: string, distance: number, speed: number, elevation: number, time: number, collectionId: string, img: string, sport: string, user: User, location: string;
 </script>
 
 <div class="mb-5 bg-neutral-800">

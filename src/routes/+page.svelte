@@ -5,12 +5,12 @@
   import Profile from '$components/profile.svelte'
   import Activity from '$components/activity.svelte'
   import Statistics from '$components/statistics.svelte'
-  import type { Post } from '$lib/types';
+  import type { Exercises } from '$lib/types';
 
   export let data;
   export let form;
   let username: string, name: string, password: string = '', confirm: string;
-  let records: Post[] = [];
+  let records: Exercises = [];
   let ready: boolean
   let loadingMore: boolean = false;
   let page: number = 0;
@@ -25,9 +25,9 @@
     }
   }
 
-  let totals;
-  let month;
-  let year;
+  let totals: Exercises;
+  let month: Exercises;
+  let year: Exercises;
   let currentDate = new Date();
   let currentYear = currentDate.getFullYear()
   currentDate.setDate(currentDate.getDate() - 28);

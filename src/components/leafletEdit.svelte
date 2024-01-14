@@ -1,5 +1,4 @@
 <script lang="ts">
-  //@ts-nocheck
   import { onMount, onDestroy, setContext, createEventDispatcher, tick } from 'svelte';
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
@@ -16,12 +15,14 @@
 
   import 'leaflet-simple-map-screenshoter';
 
+  import type { User, Route, Routes, Course, Coordinates, ElevationResponse, Activities } from '$lib/types';
+
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
   export let zoom: number | undefined = undefined;
-  export let user: string;
+  export let user: User;
   export let from: string;
-  export let routeData;
+  export let routeData: Course;
 
   const dispatch = createEventDispatcher();
 
@@ -30,23 +31,23 @@
 
   let waypoints: L.LatLng[] = [];
   let routingControl: L.Routing.Control | undefined;
-  let route
-  let courseName = ""
-  let elevationControl: any;
+  let route: Route
+  let courseName: string = ""
+  let elevationControl: L.elevationControl | undefined;
   let allowMapInteraction = true;
 
   let distance: number = 0;
   let elevationGain: number = 0;
   // let estimatedTime: number = 0;
 
-  let type = "cycling";
-  let mode = "bike";
-  let activities;
+  let type: string = "cycling";
+  let mode: string = "bike";
+  let activities: Activities;
 
-  let formData
+  let formData: any;
 
-  let simpleMapScreenshoter;
-  let screenshotBlob: Blob | null = null;
+  let simpleMapScreenshoter: L.simpleMapScreenshoter | undefined;
+  let screenshotBlob: Blob
   let screenshotOptions = {
     cropImageByInnerWH: true,
     hidden: true,
@@ -71,7 +72,7 @@
 
     map = L.map(mapElement)
       .on('zoom', (e: MouseEvent) => dispatch('zoom', e))
-      .on('popupopen', async (e) => {
+      .on('popupopen', async (e: L.map) => {
         await tick();
         e.popup.update();
       })
@@ -136,12 +137,12 @@
 
     simpleMapScreenshoter = L.simpleMapScreenshoter(screenshotOptions).addTo(map);
 
-    async function getElevationData(coordinates) {
+    async function getElevationData(coordinates: Coordinates) {
       try {
         const apiUrl = 'https://api.open-elevation.com/api/v1/lookup';
 
         // Transform coordinates into the required format
-        const locations = coordinates.map(coord => ({
+        const locations: ElevationResponse = coordinates.map(coord => ({
           latitude: coord.lat,
           longitude: coord.lng
         }));
@@ -155,7 +156,7 @@
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data: ElevationResponse = await response.json();
           return data.results.map(result => result.elevation);
         } else {
           console.error('Open-Elevation API Error:', response.status, response.statusText);
@@ -169,14 +170,14 @@
 
     routingControl.on('waypointschanged', handleWaypointsChanged);
 
-    routingControl.on('routesfound', async function (e) {
+    routingControl.on('routesfound', async function (e: Routes) {
       route = e.routes[0];
 
       // Get elevation data for each coordinate in the route
       const elevationData = await getElevationData(route.coordinates);
 
       // Update elevation property for each coordinate in the route
-      route.coordinates.forEach((coord, index) => {
+      route.coordinates.forEach((coord: Coordinates, index: number) => {
         coord.meta = { elevation: elevationData[index] };
       });
 
@@ -288,7 +289,7 @@
     }
   }
 
-  function generateGPX(routeData) {
+  function generateGPX(routeData: Route) {
     const gpx = `<?xml version='1.0' encoding='UTF-8'?>
 <gpx version="1.1" creator="${user.name}" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
   <metadata>
@@ -307,7 +308,7 @@
     <name>${courseName}</name>
     <type>${type}</type>
     <trkseg>
-      ${routeData.coordinates.map((coord, index) =>`<trkpt lat="${coord.lat}" lon="${coord.lng}">
+      ${routeData.coordinates.map((coord: Coordinates, index: number) =>`<trkpt lat="${coord.lat}" lon="${coord.lng}">
         <ele>${coord.meta.elevation}</ele>
       </trkpt>`).join('\n')}
     </trkseg>
