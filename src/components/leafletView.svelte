@@ -174,13 +174,11 @@
 :global(.leaflet-marker-icon) {
   opacity: 0;
 }
-:global(.elevation-control .axis text, .elevation-control .legend text, .elevation-control .point text) {
-  fill: white;
+:global(.tick text, .axis text) {
   font-size: 12px;
-  font-weight: 700;
-  paint-order: stroke fill;
-  stroke: #fff;
-  stroke-width: 0px;
+  fill: white !important;
+  color: white !important;
+  stroke-width: 0px !important;
 }
 :global(.elevation-detached.lightblue-theme .area) {
   stroke: orange;

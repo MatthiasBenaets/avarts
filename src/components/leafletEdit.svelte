@@ -86,17 +86,24 @@
       routeWhileDragging: true,
       geocoder: L.Control.Geocoder.nominatim(),
       // users might need to provider their own.
-      router: env.PUBLIC_OSRM ?
+      router: env.PUBLIC_OSRM_URL ?
         L.Routing.osrmv1({
-          serviceUrl: env.PUBLIC_OSRM,
+          serviceUrl: env.PUBLIC_OSRM_URL,
           urlParameters: {
             vehicle: mode,
+          }
+        })
+      : env.PUBLIC_GRAPHHOPPER_URL ?
+        L.Routing.graphHopper(undefined, {
+          serviceUrl: env.PUBLIC_GRAPHHOPPER_URL,
+          urlParameters: {
+            profile: mode,
           }
         })
       : env.PUBLIC_GRAPHHOPPER_API ?
         L.Routing.graphHopper(graphApi, {
           urlParameters: {
-            vehicle: mode,
+            profile: mode,
           }
         })
       : null,
@@ -418,7 +425,11 @@
     }
 
     // switch routing method and update route
-    routingControl.options.router.options.urlParameters.vehicle = mode;
+    if (env.PUBLIC_GRAPHHOPPER_URL) {
+      routingControl.options.router.options.urlParameters.profile = mode;
+    } else {
+      routingControl.options.router.options.urlParameters.vehicle = mode;
+    }
     routingControl.route();
 
     activities = await pb.collection('activities').getList(1, 10, {filter: `user = "${$userCookie.user.id}" && sport = "${type}"`, sort: '-start_time'});
@@ -508,13 +519,11 @@
 :global(.elevation-control .background) {
     background-color: rgb(38 38 38);
 }
-:global(.elevation-control, .axis text, .elevation-control, .legend text, .elevation-control, .point text) {
-  fill: white;
+:global(.tick text, .axis text) {
   font-size: 15px;
-  font-weight: 700;
-  paint-order: stroke fill;
-  stroke: #fff;
-  stroke-width: 0px;
+  fill: white !important;
+  color: white !important;
+  stroke-width: 0px !important;
 }
 :global(.elevation-detached.lightblue-theme .area) {
   stroke: orange;

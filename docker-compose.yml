@@ -17,7 +17,8 @@ services:
       - BODY_SIZE_LIMIT=20971520
       - PUBLIC_REGISTRATION=true
       # - PUBLIC_OSRM=http://0.0.0.0:5000/route/v1
-      # - PUBLIC_GRAPHHOPPER_API=0e8e8ec3-0b05-4cd4-a75a-232cc8455ecb
+      # - PUBLIC_GRAPHHOPPER_URL=http://0.0.0.0:8989/route
+      # - PUBLIC_GRAPHHOPPER_API=
       - PUBLIC_LOCATION_API=6595ca1312f47773878382wbie28477
 
   # osrm:
@@ -29,6 +30,18 @@ services:
   #   volumes:
   #     - ./osrm:/data
   #   command: "osrm-routed --max-matching-size 1000 --max-table-size 1000 --max-viaroute-size 1000 --algorithm mld /data/benelux.osrm"
+
+  # graphhopper:
+  #   image: openjdk
+  #   container_name: graphhopper
+  #   restart: always
+  #   ports:
+  #     - 8989:8989
+  #   volumes:
+  #     - ./graphhopper:/data
+  #   command: >
+  #     bash -c "cd /data
+  #     && java -D\"dw.graphhopper.datareader.file=berlin-latest.osm.pbf\" -jar graphhopper-web-8.0.jar server config-example.yml"
 
 volumes:
   data:
