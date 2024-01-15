@@ -451,7 +451,7 @@
   <div class="flex flex-row w-full h-[10%] bg-neutral-800 border border-neutral-400">
     <button on:click={handleClick} class="h-full w-[6%] border-e border-neutral-400 group">
       <div class="flex flex-col h-full justify-center items-center  group-hover:bg-neutral-900">
-        <span class="text-white text-sm">Type</span>
+        <span class="text-white text-xs md:text-sm">Type</span>
         {#if type == "cycling"}
           <svg class="mt-1 text-neutral-400 group-hover:text-orange-600" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
         {:else if type == "running"}
@@ -459,22 +459,22 @@
         {/if}
       </div>
     </button>
-    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
-      <span class="text-white text-sm">Distance</span>
-      <span class="text-neutral-400 text-2xl font-semibold">
+    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-1 md:pl-5">
+      <span class="text-white text-xs md:text-sm">Distance</span>
+      <span class="text-neutral-400 text-sm md:text-2xl font-semibold">
         {#if distance}{(distance / 1000).toFixed(2)}{:else}0.00{/if} km
       </span>
     </div>
-    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
-      <span class="text-white text-sm">Elevation Gain</span>
-      <span class="text-neutral-400 text-2xl font-semibold">
+    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-1 md:pl-5">
+      <span class="text-white text-xs md:text-sm">Elevation Gain</span>
+      <span class="text-neutral-400 text-sm md:text-2xl font-semibold">
         <!-- 0.6 because of free elevation api not being very accurate -->
         {#if elevationGain}{(elevationGain*0.6).toFixed(2)}{:else}0.00{/if} m
       </span>
     </div>
-    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-5">
-      <span class="text-white text-sm">Est. Moving Time</span>
-      <span class="text-neutral-400 text-2xl font-semibold">
+    <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-1 md:pl-5">
+      <span class="text-white text-sm md:text-xs">Est. Moving Time</span>
+      <span class="text-neutral-400 text-sm md:text-2xl font-semibold">
         {#if averageSpeed}{((distance/1000)/(averageSpeed) * 60).toFixed(0)}{/if} min.
       </span>
     </div>
@@ -484,25 +484,25 @@
           <form id="input" method="POST" on:submit={handleSubmit} class="flex justify-center items-center h-full">
             <div class="flex flex-col">
               <span class="text-white -mt-2 text-sm">Course name:</span>
-              <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
+              <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-md md:text-2xl border border-neutral-400 w-full" />
             </div>
           </form>
         {:else if from == "edit"}
           <form id="input" method="POST" on:submit={handleUpdate} class="flex justify-center items-center h-full">
             <div class="flex flex-col">
               <span class="text-white -mt-2 text-sm">Course name:</span>
-              <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-2xl border border-neutral-400 w-full" />
+              <input bind:value={courseName} type="text" name="title" class="bg-neutral-700 text-white text-md md:text-2xl border border-neutral-400 w-full" />
             </div>
           </form>
         {/if}
       </div>
       <div class="flex justify-center items-center h-full w-[25.8%] border-s border-neutral-400" style="{courseName != '' && route != undefined ? '' : 'cursor: not-allowed;'}">
-        <button type="submit" form="input" class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" style="{courseName != '' && route != undefined ? '' : 'pointer-events: none;' }">Save</button>
+        <button type="submit" form="input" class="text-white w-full h-full text-md md:text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" style="{courseName != '' && route != undefined ? '' : 'pointer-events: none;' }">Save</button>
       </div>
     </div>
 
     <div class="flex justify-center items-center h-full w-[10%] border-s border-neutral-400">
-      <button class="text-white w-full h-full text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" on:click={exportToGPX}>Export GPX</button>
+      <button class="text-white w-full h-full text-md md:text-2xl font-semibold hover:bg-neutral-900 hover:text-orange-600" on:click={exportToGPX}>Export GPX</button>
     </div>
   </div>
 </div>

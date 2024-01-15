@@ -34,8 +34,8 @@
   </span>
 </div>
 
-<div class="flex flex-row mt-10 ml-10">
-  <div class="flex flex-col w-1/4">
+<div class="flex flex-col md:flex-row mt-10 ml-10 mr-10 md:mr-0">
+  <div class="flex flex-col md:w-1/4">
     <div class="flex flex-row justify-between">
       <div>
         <h1 class="text-3xl font-semibold text-white capitalize">
@@ -120,7 +120,7 @@
       </div>
     </div>
   </div>
-  <div class="flex flex-col w-3/4 ml-20">
+  <div class="flex flex-col w-full md:w-3/4 md:ml-20 mt-10 md:mt-10">
     <div class="">
       <h1 class="text-2xl text-white mb-3">
         Route and Elevation
@@ -136,7 +136,7 @@
 <style>
 :global(.background){
   background-color: rgb(50 50 50) !important;
-  transform: scaleY(0.8);
-  margin-top: -2rem;
+  transform: scaleY(1);
+  margin-top: 0rem;
 }
 </style>

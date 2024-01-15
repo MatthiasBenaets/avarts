@@ -180,6 +180,7 @@
       formData.append('tot_time', parsedData.activity.sessions[0].total_timer_time)
       formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
       formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
+      formData.append('fit', new Blob([fileContent], { type: 'application/octet-stream' }), 'activity.fit');
       formData.append('img', screenshotBlob, 'activity.png');
       formData.append('location', location)
     } else {
@@ -232,9 +233,10 @@
     {/if}
   </div>
   <div class="flex flex-row">
-    <div class="flex flex-col my-5 w-1/2">
+    <div class="flex flex-col my-5 w-full md:w-1/2">
       {#if !gpx}
-      <input type="file" name="fit" form="activity" accept=".fit" on:change={handleFileChange} class="text-white my-10"/>
+      <p class="text-white mt-10 mb-2 font-semibold"> Upload your fit-file for processing.</p>
+      <input type="file" name="fit" form="activity" accept=".fit" on:change={handleFileChange} class="text-white mb-10"/>
       {/if}
       {#if process}
         <p class="text-white">Processing file, please wait...</p>
@@ -321,7 +323,7 @@
 
 <div class="flex flex-row p-5">
   {#if parsedData}
-    <div class="w-1/3">
+    <div class="w-full md:w-2/5">
       <table class=" text-white text-sm">
         {#if parsedData.activity.sessions[0].sport}
           <tr>
@@ -504,7 +506,7 @@
       </table>
     </div>
   {/if}
-  <div class="w-2/3">
+  <div class="md:w-3/5">
     <div class="h-[400px]" style="{parsedData ? '' : 'opacity: 0; pointer-events: none;'}">
       <Leaflet bind:this={leafletView}  view={initialView} zoom={13} gpx={gpx} from="upload" on:screenshotTaken={handleScreenshot}/>
     </div>

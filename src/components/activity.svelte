@@ -11,19 +11,21 @@
       <div class="w-[15%]">
         <a href="/">
           {#if user.avatar}
-            <img src="http://127.0.0.1:8090/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full">
+            <img src="http://127.0.0.1:8090/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full aspect-square">
           {:else}
             <img src="/avatar.svg" alt="avatar" class="h-16 w-16 object-cover rounded-full">
           {/if}
         </a>
       </div>
-      <div class="flex flex-col text-white pt-2">
+      <div class="flex flex-col text-white pt-2 md:w-[85%]">
         <span class="font-semibold hover:text-orange-500">
           <a href="/">
             {user.name}
           </a>
         </span>
-        <span>{formatDate(date)} {#if location} · {location}{/if}</span>
+        <span class="flex flex-col md:flex-row">
+          <span>{formatDate(date)}</span> <span>{#if location}<span class="hidden md:inline">&nbsp· </span>{location}{/if}</span>
+        </span>
       </div>
     </div>
     <div class="flex text-white mt-4">
@@ -36,9 +38,9 @@
           <svg class="ml-4" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
         {/if}
       </div>
-      <div class="">
+      <div class="w-[85%]">
         <span class="text-2xl font-semibold hover:text-orange-500">
-          <a href="/activities/{id}">
+          <a href="/activities/{id}" class="break-words">
             {name}
           </a>
         </span>
@@ -46,19 +48,19 @@
     </div>
     <div class="pb-4 w-[95%]">
       <ul class="flex flex-wrap mt-5">
-        <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
+        <li class="flex flex-col w-1/2 md:w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Distance</span>
-          <span class="text-xl text-white">{distance.toFixed(2)}<span>&nbspkm</span></span>
+          <span class="text-xl text-white">{distance.toFixed(2)}<span class="text-sm">&nbspkm</span></span>
         </li>
-        <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
+        <li class="flex flex-col w-1/2 md:w-1/4 pl-4 md:border-e md:border-neutral-500">
           <span class="text-neutral-500">Speed</span>
-          <span class="text-xl text-white">{speed}<span>&nbspkm/h</span></span>
+          <span class="text-xl text-white">{speed}<span class="text-sm">&nbspkm/h</span></span>
         </li>
-        <li class="flex flex-col w-1/4 pl-4 border-e border-neutral-500">
+        <li class="hidden md:flex flex-col w-1/4 pl-4 border-e border-neutral-500">
           <span class="text-neutral-500">Elev Gain</span>
-          <span class="text-xl text-white">{elevation*1000}<span>m</span></span>
+          <span class="text-xl text-white">{elevation*1000}<span class="text-sm">m</span></span>
         </li>
-        <li class="flex flex-col w-1/4 pl-4">
+        <li class="hidden md:flex flex-col w-1/4 pl-4">
           <span class="text-neutral-500">Time</span>
           <span class="text-xl text-white">{new Date(time * 1000).toISOString().substring(11, 19)}</span>
         </li>

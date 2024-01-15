@@ -19,7 +19,7 @@
 </script>
 
 <div class="flex mt-5">
-  <div class="w-[15%] mr-5">
+  <div class="hidden md:block w-[15%] mr-5">
     <ul class="text-white border border-neutral-500 bg-neutral-800">
       <a href="/activities/{data.id}">
         <li class="p-3 pl-5 text-xl border-b border-neutral-500 border-l-4 border-l-orange-500 hover:bg-neutral-900">
@@ -57,7 +57,7 @@
       </a> -->
     </ul>
   </div>
-  <div class="w-[85%]">
+  <div class="w-full mx-5 md:mx-0 md:w-[85%]">
     <div class="bg-neutral-800">
       <header class="bg-neutral-900 border border-neutral-500">
         <div class="flex justify-between">
@@ -107,8 +107,8 @@
           </div>
         </div>
       </header>
-      <div class="flex">
-        <div class="flex flex-col w-1/2 border-s border-e border-b border-neutral-500">
+      <div class="flex flex-col md:flex-row">
+        <div class="flex flex-col md:w-1/2 border-s border-e border-b border-neutral-500">
           <div class="flex m-5 pb-7 border-b border-neutral-500">
             <div class="w-[20%]">
               <a href="/">
@@ -136,7 +136,7 @@
             <button class="ms-2 p-1 text-white text-xs border border-neutral-500 rounded-md">Comment</button>
           </div>
         </div>
-        <div class="flex flex-col w-1/2 border-e border-b border-neutral-500">
+        <div class="flex flex-col md:w-1/2 border-e border-b border-neutral-500">
           <div class="p-5">
             <div class="pb-5">
               <ul class="flex flex-wrap text-white">

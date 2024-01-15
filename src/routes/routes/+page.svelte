@@ -26,9 +26,10 @@
 
 {#each routes as route, index}
   {#if index % 4 === 0}
-    <div class="flex flex-row w-full">
+    <!-- <div class="flex flex-col lg:flex-row w-full justify-center lg:justify-normal"> -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
       {#each routes.slice(index, index + 4) as { title, distance, elevation, time, updated, sport, collectionId, id, img, gpx }}
-        <div class="w-[23.5%] flex flex-col bg-neutral-800 border border-neutral-400 mb-5 ml-5">
+        <div class="w-[300px] flex flex-col bg-neutral-800 border border-neutral-400 mb-5 ml-5">
           <div class="h-[200px] bg-neutral-600 overflow-hidden">
             <a href="/routes/{id}">
               <img class="h-full w-full object-cover" src='http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}' alt="route">
@@ -80,3 +81,9 @@
     </div>
   {/if}
 {/each}
+
+<style>
+.grid {
+  opacity: 1;
+}
+</style>

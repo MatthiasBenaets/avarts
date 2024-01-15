@@ -20,8 +20,8 @@
       <button type="submit" form="update" class="bg-orange-600 px-14 py-2 rounded-md font-semibold text-white hover:bg-orange-700">Save</button>
     {/if}
   </div>
-  <div class="flex flex-row">
-    <form id="update" action="?/update" method="POST" class="flex flex-row w-2/3" enctype="multipart/form-data">
+  <div class="flex flex-col md:flex-row">
+    <form id="update" action="?/update" method="POST" class="flex flex-row w-full md:w-2/3" enctype="multipart/form-data">
       <div class="flex flex-col w-7/12 text-white">
         <p class="mt-3 font-semibold">Title</p>
         <input type="text" name="name" bind:value={data.name} class="bg-neutral-800 border border-neutral-500 rounded-md mt-2 p-1"/>
@@ -37,7 +37,7 @@
         </select>
       </div>
     </form>
-    <div class="flex flex-col w-1/3">
+    <div class="flex flex-col w-11/12 md:w-1/3">
       <div class="flex flex-col bg-neutral-800 mt-4">
         <img src="{data.image}" alt="activity thumbnail"/>
         <table class="w-full text-white">

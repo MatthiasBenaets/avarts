@@ -85,10 +85,10 @@
 {#if data.user}
   <div class="flex">
     {#if ready}
-      <div class="w-1/4 m-5">
+      <div class="w-1/4 m-5 hidden xl:block">
         <Profile data={data} records={totals} />
       </div>
-      <div class="flex flex-col w-1/2 mt-8">
+      <div class="flex flex-col w-full lg:w-1/2 mt-8 mx-5 sm:mx-20 xl:mx-0">
         {#if records.length > 0}
           {#each records as { start_time, name, id, tot_distance, sport, avg_speed, tot_elevation, elap_time, collectionId, img, expand, location }}
             <Activity date={start_time}
@@ -123,7 +123,7 @@
           </div>
         {/if}
       </div>
-        <div class="w-1/4 m-5">
+        <div class="w-1/4 m-5 hidden lg:block">
           <Statistics records={totals} month={month} year={year}/>
       </div>
     {/if}

@@ -118,10 +118,10 @@ wget http://download.geofabrik.de/europe/belgium-latest.osm.pbf
 ```
 3. Afterwards, process the file. Either pick `car.lua`, `bicycle.lua` or `foot.lua` for your routing engine.
 
->!NOTE
->To extract and process the file(s), about 5x the initial `.osm.pbf` file size is needed in RAM.\
->For example, a 1GB file will require 5GB of RAM.
->Keep this in mind when using large region files. It will crash out if not enough RAM is available.
+> [!NOTE]
+> To extract and process the file(s), about 5x the initial `.osm.pbf` file size is needed in RAM.\
+> For example, a 1GB file will require 5GB of RAM.
+> Keep this in mind when using large region files. It will crash out if not enough RAM is available.
 
 ```bash
 docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/bicycle.lua /data/belgium-latest.osm.pbf
@@ -204,10 +204,10 @@ You can still run this command before deploying with docker-compose, to make the
 # command for node and docker
 java -D"dw.graphhopper.datareader.file=belgium.osm.pbf" -jar graphhopper*.jar server config-example.yml
 ```
->!NOTE
->Just like OSRM, it will use a lot of RAM to generate the initial cache files.
->Keep this in mind when selecting large region files.
->On first startup, when there is no `graph-cache` directory, it can take a fairly long while before the server if fully deployed.
+> [!NOTE]
+> Just like OSRM, it will use a lot of RAM to generate the initial cache files.
+> Keep this in mind when selecting large region files.
+> On first startup, when there is no `graph-cache` directory, it can take a fairly long while before the server if fully deployed.
 
 Don't forget to set the environment variable to the routing machine with `PUBLIC_GRAPHHOPPER_URL`.\
 If you followed the steps above, use `http://0.0.0.0:8989/route`.
@@ -259,8 +259,7 @@ This key can be passed as a variable `PUBLIC_LOCATION_API`.
 <b>A:</b> GraphHopper self-hosted > OSRM self-hosted > GraphHopper API > OSRM demo server
 
 ## TODO
-- Store fit file
-- Screen dimension support
+- Fix global CSS for leaflet elevation
 - Allow reset password
 - Custom charts for gpx using d3 - Analysis and Laps per activity
 - Track equipment
