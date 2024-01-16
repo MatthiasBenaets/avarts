@@ -11,7 +11,7 @@
   <a href="#configuration">Configuration</a> •
   <a href="#images">Images</a> •
   <a href="#FAQ">FAQ</a> •
-  <a href="#TODO">To Do</a> •
+  <a href="#TODO">To Do</a>
 </p>
 
 ---
@@ -263,7 +263,9 @@ This key can be passed as a variable `PUBLIC_LOCATION_API`.
 <b>A:</b> GraphHopper self-hosted > OSRM self-hosted > GraphHopper API > OSRM demo server
 
 ## TODO
-- Custom charts for gpx using d3 - Analysis and Laps per activity
+- Reset route in builder
+- Remove waypoints in builder
 - Track equipment
 - Allow following other users
+- Custom charts for gpx using d3 - Analysis and Laps per activity if interactivity possible
 - Complete rewrite

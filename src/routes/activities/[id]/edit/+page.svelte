@@ -21,7 +21,7 @@
     {/if}
   </div>
   <div class="flex flex-col md:flex-row">
-    <form id="update" action="?/update" method="POST" class="flex flex-row w-full md:w-2/3" enctype="multipart/form-data">
+    <form id="update" action="?/update" method="POST" class="flex flex-row w-full lg:w-2/3" enctype="multipart/form-data">
       <div class="flex flex-col w-7/12 text-white">
         <p class="mt-3 font-semibold">Title</p>
         <input type="text" name="name" bind:value={data.name} class="bg-neutral-800 border border-neutral-500 rounded-md mt-2 p-1"/>
@@ -37,9 +37,11 @@
         </select>
       </div>
     </form>
-    <div class="flex flex-col w-11/12 md:w-1/3">
+    <div class="flex flex-col w-11/12 lg:w-1/3">
       <div class="flex flex-col bg-neutral-800 mt-4">
-        <img src="{data.image}" alt="activity thumbnail"/>
+        <div class="h-[250px]">
+          <img src="{data.image}" alt="activity thumbnail" class="w-full h-full object-cover"/>
+        </div>
         <table class="w-full text-white">
           <tr>
             <td class="font-semibold px-5 p-1 pt-5">

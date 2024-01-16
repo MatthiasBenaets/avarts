@@ -192,4 +192,8 @@
 :global(.background) {
   height: 100%;
 }
+:global(.legend-item text, .legend-switcher-label) {
+  fill: white !important;
+  stroke-width: 0px !important;
+}
 </style>
