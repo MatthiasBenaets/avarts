@@ -89,6 +89,10 @@ login:      admin@avarts.lan
 password:   adminadmin
 ```
 
+Since Avarts does not require you to register with an email address, it can be tricky to reset passwords if one has forgot theirs.
+It's recommended to just reset this via the Pocketbase interface in the `users` collection.
+If you also no longer have access to your Pocketbase admin login, use `./pocketbase admin` with `create` or `update`.
+
 ### Routing
 
 **Default:**\
@@ -162,7 +166,7 @@ If you plan on using `docker-compose.yml`, it's best to place these files inside
 # Optional for docker-compose (inside root of repo)
 cd graphhopper
 # Get files
-wget https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/8.0/graphhopper-web-8.0.jar https://raw.githubusercontent.com/graphhopper/graphhopper/8.x/config-example.yml http://download.geofabrik.de/europe/germany/belgium-latest.osm.pbf
+wget https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/8.0/graphhopper-web-8.0.jar https://raw.githubusercontent.com/graphhopper/graphhopper/8.x/config-example.yml http://download.geofabrik.de/europe/belgium-latest.osm.pbf
 ```
 2. Create your own `config.yml` file or adapt the existing `config-example.yml`.\
 Here are a couple of tweaks you can make. This will set up a routing server that will work for cycling and running.\
@@ -259,8 +263,6 @@ This key can be passed as a variable `PUBLIC_LOCATION_API`.
 <b>A:</b> GraphHopper self-hosted > OSRM self-hosted > GraphHopper API > OSRM demo server
 
 ## TODO
-- Fix global CSS for leaflet elevation
-- Allow reset password
 - Custom charts for gpx using d3 - Analysis and Laps per activity
 - Track equipment
 - Allow following other users

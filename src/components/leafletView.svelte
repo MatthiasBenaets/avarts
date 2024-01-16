@@ -152,7 +152,7 @@
   }
 </script>
 
-<div class="w-full h-full" bind:this={mapElement}>
+<div class="view w-full h-full" bind:this={mapElement}>
   {#if map}
     <slot />
   {/if}
@@ -163,6 +163,9 @@
 :global(.leaflet-tile) {
   border-style: none !important;
 }
+:global(.grid){
+  opacity: 0;
+}
 :global(.elevation-control .area) {
   fill:  #ff9f24 ;
   opacity: 1;
@@ -170,7 +173,7 @@
 :global(.elevation-control .background) {
   background-color: rgb(38 38 38);
 }
-:global(.leaflet-marker-icon) {
+:global(.view .leaflet-map-pane .leaflet-marker-pane) {
   opacity: 0;
 }
 :global(.tick text, .axis text) {
@@ -188,8 +191,5 @@
 }
 :global(.background) {
   height: 100%;
-}
-:global(.grid){
-  opacity: 0;
 }
 </style>

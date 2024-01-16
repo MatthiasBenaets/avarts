@@ -69,9 +69,9 @@
     {#if img}
       <div>
         <a href="/activities/{id}">
-        <div class="h-full">
-        <img src="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}" alt="">
-          <div>
+        <div class="w-full h-[300px] overflow-hidden">
+          <img src="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}" alt="Activity Route" class="w-full h-full object-cover">
+        <div>
         </a>
       </div>
     {/if}
