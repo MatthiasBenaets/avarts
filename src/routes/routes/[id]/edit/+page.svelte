@@ -33,6 +33,6 @@
   $: initialView = [latitude, longitude];
 </script>
 
-<div class="absolute h-[94.5%] w-screen left-0">
+<div class="absolute h-[88.5%] md:h-[94.5%] w-screen left-0">
   <Leaflet view={initialView} zoom={13} user={data.user} from="edit" routeData={data} />
 </div>

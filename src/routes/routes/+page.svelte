@@ -4,7 +4,7 @@
   import type { Courses } from '$lib/types';
 
   export let data;
-  let ready;
+  let ready: Boolean;
   let routes: Courses = [];
 
   onMount(async () => {
@@ -24,12 +24,15 @@
   </a>
 </div>
 
+{#if !ready}
+  <p class="ml-5 text-white text-2xl">Loading routes...</p>
+{/if}
+
 {#each routes as route, index}
   {#if index % 4 === 0}
-    <!-- <div class="flex flex-col lg:flex-row w-full justify-center lg:justify-normal"> -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 sm:w-full sm:grid-cols-2 md:w-10/12 lg:w-8/12 xl:grid-cols-4 gap-3 xl:w-full">
       {#each routes.slice(index, index + 4) as { title, distance, elevation, time, updated, sport, collectionId, id, img, gpx }}
-        <div class="w-[300px] flex flex-col bg-neutral-800 border border-neutral-400 mb-5 ml-5">
+        <div class="w-[298px] flex flex-col justify-end bg-neutral-800 border border-neutral-400 mb-5 ml-3">
           <div class="h-[200px] bg-neutral-600 overflow-hidden">
             <a href="/routes/{id}">
               <img class="h-full w-full object-cover" src='http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}' alt="route">

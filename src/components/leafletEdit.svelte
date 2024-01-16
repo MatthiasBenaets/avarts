@@ -473,7 +473,7 @@
       </span>
     </div>
     <div class="flex flex-col justify-center h-full w-[15%] border-e border-neutral-400 pl-1 md:pl-5">
-      <span class="text-white text-sm md:text-xs">Est. Moving Time</span>
+      <span class="text-white text-xs md:text-sm">Est. Moving Time</span>
       <span class="text-neutral-400 text-sm md:text-2xl font-semibold">
         {#if averageSpeed}{((distance/1000)/(averageSpeed) * 60).toFixed(0)}{/if} min.
       </span>
