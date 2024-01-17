@@ -35,6 +35,8 @@
   let courseName: string = ""
   let elevationControl: L.elevationControl | undefined;
   let allowMapInteraction = true;
+  let resetButtonContainer: HTMLElement | null = null;
+  let visibleNav: boolean = true;
 
   let distance: number = 0;
   let elevationGain: number = 0;
@@ -191,7 +193,7 @@
           srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
           // theme: 'lime-theme',
           detached: false,
-          position: "bottomleft",
+          position: "bottomright",
           slope: "summary",
           altitude: true,
           time: false,
@@ -202,7 +204,7 @@
           legend: false,
           waypoints: false,
           wptLabels: false,
-          closeBtn: false,
+          // closeBtn: false,
         }).addTo(map);
       }
 
@@ -232,6 +234,35 @@
       averageSpeed += activities.items[i].avg_speed
     }
     averageSpeed = averageSpeed / activities.items.length
+
+    fixButton()
+
+    // Generate a reset button inside the leaflet routing menu
+    const leafletRoutingDiv = document.querySelector('.leaflet-routing-container');
+
+    if (leafletRoutingDiv) {
+      // Create a container for the reset button
+      resetButtonContainer = document.createElement('div');
+      resetButtonContainer.classList.add('absolute', 'bottom-3', 'left-[6px]', 'z-50');
+
+      // Create the reset button
+      const resetButton = document.createElement('button');
+      resetButton.textContent = 'Reset Route';
+      resetButton.classList.add('text-sm', 'font-semibold', 'border', 'rounded-[4px]', 'py-[1px]', 'px-1', 'mr-3', 'hover:bg-neutral-700');
+      resetButton.addEventListener('click', resetRoute);
+
+      const toggleHide = document.createElement('button');
+      toggleHide.classList.add('text-sm', 'font-semibold', 'border', 'rounded-[4px]', 'py-[1px]', 'px-1', 'hover:bg-neutral-700');
+      toggleHide.textContent = 'Hide Menu';
+      toggleHide.addEventListener('click', toggleNav);
+
+      // Append the reset button to the container
+      resetButtonContainer.appendChild(resetButton);
+      resetButtonContainer.appendChild(toggleHide);
+
+      // Append the container to the "leaflet-routing" div
+      leafletRoutingDiv.appendChild(resetButtonContainer);
+    }
   });
 
   onDestroy(() => {
@@ -267,6 +298,7 @@
         allowMapInteraction = true;
       }, 1000);
     }
+    fixButton()
   }
 
   function handleWaypointsChanged() {
@@ -408,6 +440,12 @@
     }
   }
 
+  function resetRoute() {
+    waypoints = [];
+    routingControl?.setWaypoints([]);
+    elevationControl?.clear();
+  }
+
   const handleClick = async() => {
     switch (type) {
       case 'cycling':
@@ -440,9 +478,46 @@
     }
     averageSpeed = averageSpeed / activities.items.length
   };
+
+  function fixButton() {
+    // Routing machine button is just a span that is click-through.
+    // This should fix the issue that when removing a waypoint it also click the map.
+    // Works but sometimes still happens
+    const interactiveSpans = document.querySelectorAll('.leaflet-routing-remove-waypoint');
+    const interactiveLinks = document.querySelectorAll('.elevation-toggle-icon');
+    interactiveSpans.forEach(function (interactiveSpan) {
+        interactiveSpan.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
+    interactiveLinks.forEach(function (interactiveLink) {
+        interactiveLink.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
+  }
+
+  function toggleNav() {
+    let elements = document.getElementsByClassName("leaflet-routing-container") as HTMLCollectionOf<HTMLElement>;
+    let button = document.getElementById("showNav")!;
+    for (var i = 0; i < elements.length; i++) {
+      if (visibleNav) {
+        elements[i].style.display = 'none';
+        button.style.display = "inline";
+        visibleNav = false;
+      } else {
+        elements[i].style.display = 'inline';
+        button.style.display = "none";
+        visibleNav = true;
+      }
+    }
+  }
 </script>
 
 <div class="w-full h-full">
+  <button on:click={() => toggleNav()} id="showNav" style="display: none;" class="absolute top-[10px] right-[15px] z-50 w-[36px] h-[36px] bg-neutral-800 rounded-[4px] text-white flex items-center">
+    <svg class="w-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path class="stroke-neutral-400 stroke-2" d="M8.835 14H5a1 1 0 0 0-.9.7l-2 6c-.1.1-.1.2-.1.3 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.1 0-.2-.1-.3l-2-6a1 1 0 0 0-.9-.7h-3.835"/><path class="fill-orange-500" d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9a6 6 0 0 1 12 0"/><circle class="fill-neutral-800" cx="12" cy="8" r="2"/></svg>
+  </button>
   <div class="w-full h-[90%]" bind:this={mapElement}>
     {#if map}
       <slot />
@@ -561,10 +636,79 @@
 :global(.grid){
   opacity: 0;
 }
-:global(.leaflet-routing-container){
+:global(.leaflet-routing-container) {
+  background-color: rgb(38 38 38);
+  color: white;
+  border-radius: 7px;
+}
+:global(.leaflet-routing-geocoders) {
+  border-bottom: none;
+}
+:global(.leaflet-routing-geocoder input) {
+  background-color: rgb(38 38 38);
+  padding: 2px;
+  border-radius: 5px;
+}
+:global(.leaflet-routing-add-waypoint) {
+  background-color: rgb(38 38 38) !important;
+  color: white;
+  padding-inline: 5px;
+  margin-top: 3px !important;
+  width: 25px;
+  height: 25px;
+}
+:global(.leaflet-routing-add-waypoint:hover) {
+  background-color: rgb(64 64 64) !important;
+}
+:global(.leaflet-routing-remove-waypoint::after) {
+  position: absolute;
+  display: block;
+  width: 25px;
+  height: 26px;
+  right: 0px;
+  top: 2px;
+  bottom: 0;
+  font-size: 18px;
+  font-weight: bold;
+  content: "\00d7";
+  text-align: center;
+  cursor: pointer;
+  color: white !important;
+  background: rgb(38 38 38) !important;
+  padding-top: 3px;
+  padding-left: 5px;
+  line-height: 1;
+  border-width: 1px;
+  border-color: white;
+  border-radius: 4px;
+}
+:global(.leaflet-routing-remove-waypoint:hover::after) {
+  background-color: rgb(64 64 64) !important;
+}
+:global(.leaflet-routing-alternatives-container) {
   display: none;
 }
-:global(.elevation-toggle-icon){
-  pointer-events: auto;
+:global(.elevation-toggle-icon::before) {
+  background: rgb(38 38 38) !important;
+  color: white;
+  border-width: 1px;
+  border-color: white;
+  border-radius: 4px;
+}
+
+:global(.elevation-toggle-icon, .leaflet-control-zoom, .leaflet-bar a) {
+  background: rgb(38 38 38) !important;
+  color: white;
+}
+:global(.lightblue-theme) {
+  --ele-area: rgb(251 146 60);
+  --ele-line: rgb(251 146 60);
+}
+:global(.leaflet-control-attribution) {
+  background: rgb(38 38 38) !important;
+  color: white;
+}
+:global(.leaflet-control-attribution svg) {
+  display: none !important;
 }
 </style>
