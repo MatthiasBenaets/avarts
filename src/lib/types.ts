@@ -95,6 +95,9 @@ export interface Route {
   actualWaypoints: {
     latLng: Coordinates;
   };
+  inputWaypoints: {
+    latLng: Coordinates;
+  };
   summary: {
     totalDistance: number;
     totalAscend: number;
@@ -105,6 +108,10 @@ export interface Routes {
   routes: Route[];
   length: number;
 };
+
+export interface Waypoints {
+  latLng: Coordinates
+}
 
 export interface Coordinates {
   lat: number;

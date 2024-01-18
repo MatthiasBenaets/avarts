@@ -1,14 +1,22 @@
 <script lang="ts">
+  import { env } from "$env/dynamic/public";
   import type { UserData, Exercises } from "$lib/types";
 
   export let data: UserData, records: Exercises;
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
 </script>
 
 <div class="flex flex-col sticky top-20 left-0">
   <div class="mt-12 bg-neutral-800">
     <a href="/" class="pointer-events-none">
       {#if data.user.avatar}
-        <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
+        <img src="{url}/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
       {:else}
         <img src="/avatar.svg" alt="avatar" class="h-24 w-24 object-cover rounded-full mx-auto -m-12 pointer-events-auto">
 

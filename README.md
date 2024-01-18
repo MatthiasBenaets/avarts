@@ -227,6 +227,12 @@ This is plenty, so feel free to use the API key provided in this repo, just don'
 Now if you want to use your own API key, you can request one via the link above.\
 This key can be passed as a variable `PUBLIC_LOCATION_API`.
 
+### Database URL
+At the moment, not all requests to the database run server side.
+Therefore if you plan on hosting your Avarts instance on the internet, a URL needs to exist to communicate with the database.
+By default this URL is `http://127.0.0.1:8090` but if it needs to be publicly available, set the variable `PUBLIC_DB_URL`.
+It recommended to not use any trailing slashes.
+
 ## Images
 
 **Home Page**
@@ -262,9 +268,14 @@ This key can be passed as a variable `PUBLIC_LOCATION_API`.
 <b>Q:</b> What routing server do you recommend?\
 <b>A:</b> GraphHopper self-hosted > OSRM self-hosted > GraphHopper API > OSRM demo server
 
+<b>Q:</b> I changes routing engines. My saved routes appear different now upon editing.\
+<b>A:</b> Routes are loaded in using the original waypoint set by yourself. If the active route engine uses other routing criteria, it will generate another route between the waypoints.
+
+<b>Q:</b> How is this project build?\
+<b>A:</b> Gratitude goes out to these amazing projects and their maintainers: Sveltekit, Pocketbase, Leaflet, leaflet-control-geocoder, leaflet-routing-machine, leaflet-simple-map-screenshoter, @raruto/leaflet-elevation, lrm-graphhopper, fit-file-parser, @sports-alliance/sports-lib, image-conversion, OSRM, Graphhopper and express
+
 ## TODO
-- Reset route in builder
-- Remove waypoints in builder
+- Server side only database
 - Track equipment
 - Allow following other users
 - Custom charts for gpx using d3 - Analysis and Laps per activity if interactivity possible

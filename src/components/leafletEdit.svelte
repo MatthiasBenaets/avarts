@@ -14,8 +14,9 @@
   import '@raruto/leaflet-elevation/src/index.css';
 
   import 'leaflet-simple-map-screenshoter';
+  import * as imageConversion from 'image-conversion';
 
-  import type { User, Route, Routes, Course, Coordinates, ElevationResponse, Activities } from '$lib/types';
+  import type { User, Route, Routes, Course, Coordinates, ElevationResponse, Activities, Waypoints } from '$lib/types';
 
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
@@ -190,7 +191,7 @@
       if (!elevationControl) {
         elevationControl = L.control.elevation({
           // CHANGE ME: with your own http server folder (eg. "http://custom-server/public/path/to/leaflet-elevation/src/")
-          srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
+          srcFolder: 'https://unpkg.com/@raruto/leaflet-elevation/src/',
           // theme: 'lime-theme',
           detached: false,
           position: "bottomright",
@@ -216,7 +217,13 @@
 
     // If there is a route (from edit), load it
     if (routeData) {
-      waypoints = (routeData.builder).actualWaypoints.map(waypoint => waypoint.latLng);
+      // Different json for graphhopper/osrm
+      if (routeData.builder.actualWaypoints) {
+        waypoints = routeData.builder.actualWaypoints.map((waypoint: Waypoints) => waypoint.latLng);
+      } else if (routeData.builder.inputWaypoints) {
+        waypoints = routeData.builder.inputWaypoints.map((waypoint: Waypoints) => waypoint.latLng);
+      }
+
       routingControl?.setWaypoints(waypoints);
 
       // Trigger route calculation
@@ -366,7 +373,7 @@
     // formData.append('time', estimatedTime);
     formData.append('time', ((distance/1000)/(averageSpeed) * 60 * 60).toFixed(0));
     formData.append('sport', type);
-    formData.append('img', screenshotBlob, 'route.png')
+    formData.append('img', screenshotBlob, 'route.jpeg')
     formData.append('builder', JSON.stringify(route))
 
     let response
@@ -400,7 +407,7 @@
     // formData.append('time', estimatedTime);
     formData.append('time', ((distance/1000)/(averageSpeed) * 60 * 60).toFixed(0));
     formData.append('sport', type);
-    formData.append('img', screenshotBlob, 'route.png')
+    formData.append('img', screenshotBlob, 'route.jpeg')
     formData.append('builder', JSON.stringify(route))
     formData.append('id', routeData.id)
 
@@ -423,7 +430,7 @@
   export async function createScreenshot(){
     const format = 'blob';
     const overridedPluginOptions = {
-      mimeType: 'image/png',
+      mimeType: 'image/jpeg',
     };
 
     if (map && route) {
@@ -435,6 +442,7 @@
 
     try {
       screenshotBlob = await simpleMapScreenshoter.takeScreen(format, overridedPluginOptions);
+      screenshotBlob = await imageConversion.compressAccurately(screenshotBlob,100);
     } catch (error) {
       console.error('Error creating screenshot:', error);
     }

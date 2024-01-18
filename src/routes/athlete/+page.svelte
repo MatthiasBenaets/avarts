@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { env } from "$env/dynamic/public";
   import type { UserData } from "$lib/types";
 
   export let data: UserData;
@@ -9,6 +10,13 @@
   let name: boolean = false;
   let weight: boolean = false;
   let formData;
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
 
   const showAvatar = (event: Event) => {
     const target = event.target as HTMLInputElement
@@ -83,7 +91,7 @@
         <label for="avatar" class="w-32">
           <div class="relative" title="Max 5MB">
             {#if data.user.avatar}
-              <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" id="avatarImg" class="h-32 w-32 object-cover rounded-full hover:cursor-pointer">
+              <img src="{url}/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" id="avatarImg" class="h-32 w-32 object-cover rounded-full hover:cursor-pointer">
             {:else}
               <img src="/avatar.svg" alt="avatar" id="avatarImg" class="h-32 w-32 object-cover rounded-full hover:cursor-pointer" />
             {/if}

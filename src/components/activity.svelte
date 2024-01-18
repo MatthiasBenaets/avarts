@@ -1,8 +1,16 @@
 <script lang="ts">
 	import { formatDate } from "$lib/utils";
+  import { env } from "$env/dynamic/public";
   import type { User } from "$lib/types";
 
   export let date: Date, name: string, id: string, distance: number, speed: number, elevation: number, time: number, collectionId: string, img: string, sport: string, user: User, location: string;
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
 </script>
 
 <div class="mb-5 bg-neutral-800">
@@ -11,7 +19,7 @@
       <div class="w-[15%]">
         <a href="/">
           {#if user.avatar}
-            <img src="http://127.0.0.1:8090/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full aspect-square">
+            <img src="{url}/api/files/{user.collectionId}/{user.id}/{user.avatar}" alt="avatar" class="h-16 w-16 object-cover rounded-full aspect-square">
           {:else}
             <img src="/avatar.svg" alt="avatar" class="h-16 w-16 object-cover rounded-full">
           {/if}
@@ -70,7 +78,7 @@
       <div>
         <a href="/activities/{id}">
           <div class="w-full h-[300px] overflow-hidden">
-            <img src="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}" alt="Activity Route" class="w-full h-full object-cover">
+            <img src="{url}/api/files/{collectionId}/{id}/{img}" alt="Activity Route" class="w-full h-full object-cover">
           <div>
         </a>
       </div>

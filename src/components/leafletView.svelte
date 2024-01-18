@@ -7,6 +7,7 @@
   import '@raruto/leaflet-elevation/src/index.css';
 
   import 'leaflet-simple-map-screenshoter';
+  import * as imageConversion from 'image-conversion';
 
   export let bounds: L.LatLngBoundsExpression | undefined = undefined;
   export let view: L.LatLngExpression | undefined = undefined;
@@ -48,7 +49,7 @@
 
     if (from == "upload") {
       elevationControl = L.control.elevation({
-        srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
+        srcFolder: 'https://unpkg.com/@raruto/leaflet-elevation/src/',
         detached: false,
         position: "bottomleft",
         collapsed: true,
@@ -67,7 +68,7 @@
       }).addTo(map);
     } else if (from == "activity") {
       elevationControl = L.control.elevation({
-        srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
+        srcFolder: 'https://unpkg.com/@raruto/leaflet-elevation/src/',
         // detached: true,
         // position: "bottomleft",
         slope: "summary",
@@ -85,7 +86,7 @@
       }).addTo(map);
     } else if (from == "route") {
       elevationControl = L.control.elevation({
-        srcFolder: 'http://unpkg.com/@raruto/leaflet-elevation/src/',
+        srcFolder: 'https://unpkg.com/@raruto/leaflet-elevation/src/',
         // detached: true,
         // position: "bottomleft",
         slope: "summary",
@@ -139,16 +140,12 @@
       mimeType: 'image/png'
     };
 
-    simpleMapScreenshoter.takeScreen(format, overridedPluginOptions).then(blob => {
-      // Handle the screenshot blob here (e.g., save or display it)
-
-      // Example: Display the screenshot in a new window/tab
-      // const imageUrl = URL.createObjectURL(blob);
-      // window.open(imageUrl, '_blank');
-      dispatch('screenshotTaken', blob);
-    }).catch(e => {
-      console.error(e);
-    });
+    // take screenshot
+    const blob = await simpleMapScreenshoter.takeScreen(format, overridedPluginOptions)
+    // compress screenshot
+    const image = await imageConversion.compressAccurately(blob,100);
+    // pass back image
+    dispatch('screenshotTaken', image);
   }
 </script>
 

@@ -1,8 +1,16 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { env } from '$env/dynamic/public'
   import type { UserData } from '$lib/types';
 
   export let data: UserData;
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
 
   let currentPage: string;
 
@@ -52,7 +60,7 @@
       <div class="md:border-neutral-500 md:border-e-2 group h-1/2 md:h-full border-neutral-500 border-b-2 md:border-b-0 ">
         <a href ="/athlete" class="pl-4 pr-2 flex items-center h-full">
           {#if data.user.avatar}
-            <img src="http://127.0.0.1:8090/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-8 w-8 object-cover mr-2 rounded-full overflow-hidden">
+            <img src="{url}/api/files/{data.user.collectionId}/{data.user.id}/{data.user.avatar}" alt="avatar" class="h-8 w-8 object-cover mr-2 rounded-full overflow-hidden">
           {:else}
             <img src="/avatar.svg" alt="avatar" class="h-8 w-8 object-cover mr-2 rounded-full overflow-hidden">
           {/if}

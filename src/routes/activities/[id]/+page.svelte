@@ -4,9 +4,17 @@
 	import Leaflet from "$components/leafletView.svelte";
   import { pb } from "$lib/database";
   import { userCookie } from "$lib/stores";
+  import { env } from "$env/dynamic/public";
 
   let user: UserData = $userCookie.user
   export let data: Exercise;
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
 
   let gpx = data.url
   let confirm = false;
@@ -113,7 +121,7 @@
             <div class="w-[20%]">
               <a href="/">
                 {#if data.expand.user.avatar}
-                  <img src="http://127.0.0.1:8090/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar" class="h-24 rounded-full">
+                  <img src="{url}/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar" class="h-24 rounded-full">
                 {:else}
                   <img src="/avatar.svg" alt="avatar" class="h-24 rounded-full">
                 {/if}

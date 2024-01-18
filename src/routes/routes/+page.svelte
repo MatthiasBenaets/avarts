@@ -1,11 +1,19 @@
 <script lang="ts">
 	import { onMount } from "svelte";
   import { pb } from '$lib/database';
+  import { env } from '$env/dynamic/public';
   import type { Courses } from '$lib/types';
 
   export let data;
   let ready: Boolean;
   let routes: Courses = [];
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
 
   onMount(async () => {
     if (data.user) {
@@ -35,7 +43,7 @@
         <div class="w-[298px] flex flex-col justify-end bg-neutral-800 border border-neutral-400 mb-5 ml-3">
           <div class="h-[200px] bg-neutral-600 overflow-hidden">
             <a href="/routes/{id}">
-              <img class="h-full w-full object-cover" src='http://127.0.0.1:8090/api/files/{collectionId}/{id}/{img}' alt="route">
+              <img class="h-full w-full object-cover" src='{url}/api/files/{collectionId}/{id}/{img}' alt="route">
             </a>
           </div>
           <div class="text-xs p-5 w-full flex flex-row justify-between">
@@ -47,7 +55,7 @@
                 </a>
               </button>
               <button class="ml-2 text-white">
-                <a href="http://127.0.0.1:8090/api/files/{collectionId}/{id}/{gpx}">
+                <a href="{url}/api/files/{collectionId}/{id}/{gpx}">
                   <svg class="hover:text-orange-600" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 </a>
               </button>

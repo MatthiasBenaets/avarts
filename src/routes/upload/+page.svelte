@@ -181,7 +181,7 @@
       formData.append('tss', parsedData.activity.sessions[0].training_stress_score)
       formData.append('gpx', new Blob([gpx], { type: 'application/gpx+xml' }), 'activity.gpx')
       formData.append('fit', new Blob([fileContent], { type: 'application/octet-stream' }), 'activity.fit');
-      formData.append('img', screenshotBlob, 'activity.png');
+      formData.append('img', screenshotBlob, 'activity.jpeg');
       formData.append('location', location)
     } else {
       let time = formData.get('start_time')

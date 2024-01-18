@@ -2,12 +2,21 @@
   import { pb } from '$lib/database';
 	import Leaflet from "$components/leafletView.svelte";
   import { userCookie } from "$lib/stores";
+  import { env } from "$env/dynamic/public"
   import type { Course } from '$lib/types';
 
   export let data: Course;
   let remove = false;
   let user = $userCookie.user
-  let gpx = `http://127.0.0.1:8090/api/files/${data.collectionId}/${data.id}/${data.gpx}`
+
+  let url: string;
+  if (env.PUBLIC_DB_URL) {
+    url = env.PUBLIC_DB_URL
+  } else {
+    url = "http://127.0.0.1:8090"
+  }
+
+  let gpx = `${url}/api/files/${data.collectionId}/${data.id}/${data.gpx}`
   const initialView = [0,0];
 
   if (user.id != data.user) {
@@ -60,7 +69,7 @@
       <span>Route</span>
     </div>
     <div class="flex flex-row mb-6">
-      <a href="http://127.0.0.1:8090/api/files/{data.collectionId}/{data.id}/{data.gpx}" class="bg-orange-600 rounded-md text-neutral-200 hover:bg-orange-700 w-1/2 p-2 mr-1 text-sm">
+      <a href="{url}/api/files/{data.collectionId}/{data.id}/{data.gpx}" class="bg-orange-600 rounded-md text-neutral-200 hover:bg-orange-700 w-1/2 p-2 mr-1 text-sm">
         <button class="h-full w-full">
           Download Route
         </button>
@@ -111,7 +120,7 @@
         </div>
         <div>
           {#if data.expand.user.avatar}
-            <img class="w-16 h-16 rounded-full object-cover" src="http://127.0.0.1:8090/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar"/>
+            <img class="w-16 h-16 rounded-full object-cover" src="{url}/api/files/{data.expand.user.collectionId}/{data.expand.user.id}/{data.expand.user.avatar}" alt="avatar"/>
           {:else}
             <img class="w-16 h-16 rounded-full object-cover" src="/avatar.svg" alt="avatar"/>
 

@@ -1,5 +1,15 @@
 import PocketBase from 'pocketbase';
-export const pb = new PocketBase('http://127.0.0.1:8090');
+import { env } from '$env/dynamic/public'
+
+let url: string;
+if (env.PUBLIC_DB_URL) {
+  url = env.PUBLIC_DB_URL
+} else {
+  url = "http://127.0.0.1:8090"
+
+}
+
+export const pb = new PocketBase(url);
 
 pb.autoCancellation(false);
 
