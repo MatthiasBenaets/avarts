@@ -21,7 +21,7 @@
 	});
 
 	async function addWaypoint(e: CustomEvent<MapMouseEvent>) {
-		waypoints = [...waypoints, { lngLat: e.detail.lngLat }];
+		await getNearest(`${e.detail.lngLat.lng},${e.detail.lngLat.lat}`);
 		getRoute(waypoints);
 	}
 
@@ -54,6 +54,41 @@
 			console.error('Error fetching route:', error);
 		}
 	}
+
+	async function getNearest(coordinates: string, index: number | null = null) {
+		const url = `${env.PUBLIC_ROUTING_ENGINE}/nearest/v1/bike/${coordinates}`;
+
+		try {
+			const response = await fetch(url);
+			const data = await response.json();
+
+			if (data.waypoints && data.waypoints.length > 0) {
+				if (index == null) {
+					// addWaypoint()
+					waypoints = [
+						...waypoints,
+						{
+							lngLat: new maplibregl.LngLat(
+								data.waypoints[0].location[0],
+								data.waypoints[0].location[1]
+							)
+						}
+					];
+				} else {
+					// on:dragend
+					waypoints[index].lngLat = new maplibregl.LngLat(
+						data.waypoints[0].location[0],
+						data.waypoints[0].location[1]
+					);
+				}
+				return waypoints;
+			} else {
+				throw new Error('No nearest point found');
+			}
+		} catch (error) {
+			console.error('Error fetching nearest point:', error);
+		}
+	}
 </script>
 
 <MapEvents on:click={addWaypoint} />
@@ -63,6 +98,7 @@
 		bind:lngLat={waypoint.lngLat}
 		draggable
 		on:dragend={() => {
+			getNearest(`${waypoint.lngLat.lng},${waypoint.lngLat.lat}`, index);
 			getRoute(waypoints);
 		}}
 		class="grid aspect-square h-4 w-4 place-items-center rounded-full border border-black bg-white text-black shadow-2xl focus:outline-2 focus:outline-black"
