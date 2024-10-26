@@ -1,0 +1,175 @@
+{
+	"OpenStreetMap": {
+		"version": 8,
+		"sources": {
+			"osm": {
+				"type": "raster",
+				"tiles": ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> Contributors",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "osm",
+				"type": "raster",
+				"source": "osm"
+			}
+		]
+	},
+	"OpenTopoMap": {
+		"version": 8,
+		"sources": {
+			"otm": {
+				"type": "raster",
+				"tiles": ["https://a.tile.opentopomap.org/{z}/{x}/{y}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> Contributors | &copy; <a href='https://opentopomap.org'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/'>CC-BY-SA</a>)",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "otm",
+				"type": "raster",
+				"source": "otm"
+			}
+		]
+	},
+	"CyclOSM": {
+		"version": 8,
+		"sources": {
+			"cyclosm": {
+				"type": "raster",
+				"tiles": ["https://a.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> Contributors | <a href='https://github.com/cyclosm/cyclosm-cartocss-style/releases' title='CyclOSM - Open Bicycle render'>CyclOSM</a>",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "cyclosm",
+				"type": "raster",
+				"source": "cyclosm"
+			}
+		]
+	},
+	"Carto Voyager": {
+		"version": 8,
+		"sources": {
+			"voyager": {
+				"type": "raster",
+				"tiles": ["https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors | &copy; <a href='https://carto.com/attributions'>CARTO</a>",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "voyager",
+				"type": "raster",
+				"source": "voyager"
+			}
+		]
+	},
+	"Carto Positron": {
+		"version": 8,
+		"sources": {
+			"positron": {
+				"type": "raster",
+				"tiles": ["https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors | &copy; <a href='https://carto.com/attributions'>CARTO</a>",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "positron",
+				"type": "raster",
+				"source": "positron"
+			}
+		]
+	},
+	"Carto DarkMatter": {
+		"version": 8,
+		"sources": {
+			"darkmatter": {
+				"type": "raster",
+				"tiles": ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors | &copy; <a href='https://carto.com/attributions'>CARTO</a>",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "darkmatter",
+				"type": "raster",
+				"source": "darkmatter"
+			}
+		]
+	},
+	"Stadia SmoothDark": {
+		"version": 8,
+		"sources": {
+			"smoothdark": {
+				"type": "raster",
+				"tiles": ["https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors | &copy; <a href='https://www.stadiamaps.com/' target='_blank'>Stadia Maps</a> | &copy; <a href='https://openmaptiles.org/' target='_blank'>OpenMapTiles</a>",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "smoothdark",
+				"type": "raster",
+				"source": "smoothdark"
+			}
+		]
+	},
+	"Stadia Satellite": {
+		"version": 8,
+		"sources": {
+			"satellite": {
+				"type": "raster",
+				"tiles": ["https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}.jpg"],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors | &copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href='https://www.stadiamaps.com/' target='_blank'>Stadia Maps</a> &copy; <a href='https://openmaptiles.org/' target='_blank'>OpenMapTiles</a>",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "satellite",
+				"type": "raster",
+				"source": "satellite"
+			}
+		]
+	},
+	"Esri WorldImagery": {
+		"version": 8,
+		"sources": {
+			"esriwi": {
+				"type": "raster",
+				"tiles": [
+					"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+				],
+				"tileSize": 256,
+				"attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> Contributors | Tiles: &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community ",
+				"maxzoom": 19
+			}
+		},
+		"layers": [
+			{
+				"id": "esriwi",
+				"type": "raster",
+				"source": "esriwi"
+			}
+		]
+	}
+}
