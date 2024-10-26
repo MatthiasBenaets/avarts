@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { MapLibre } from 'svelte-maplibre';
 	import MapStyle from './MapStyle.svelte';
+	import MapRouter from './MapRouter.svelte';
 	import Tiles from '$lib/data/mapTiles.json';
 	import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec';
 
@@ -11,6 +12,7 @@
 
 <MapLibre center={[50, 20]} zoom={7} class="map" standardControls {style}>
 	<MapStyle bind:style />
+	<MapRouter />
 </MapLibre>
 
 <style>
